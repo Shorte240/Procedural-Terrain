@@ -496,14 +496,15 @@ void Terrain::SimplexNoiseFunction(ID3D11Device * device, float frequency, float
 
 void Terrain::FractalBrownianMotion(ID3D11Device * device)
 {
-	// Properties
-	const int octaves = 1;
-	float lacunarity = 2.0;
-	float gain = 0.5;
-	//
-	// Initial values
-	float amplitude = 0.5;
-	float frequency = 1.;
+	float f = 1.98;  // could be 2.0
+	float s = 0.49;  // could be 0.5
+	float a = 0.0;
+	float b = 0.5;
+	int octaves = 1;
+	XMFLOAT3  d = XMFLOAT3(0.0f, 0.0f, 0.0f);
+	XMMATRIX  m = XMMatrixIdentity();
+	XMVECTOR t;
+	XMFLOAT3  q = XMFLOAT3(0.0f, 0.0f, 0.0f);
 
 	for (int y = 0; y < height; y++)
 	{
@@ -511,12 +512,25 @@ void Terrain::FractalBrownianMotion(ID3D11Device * device)
 		{
 			int index;
 			index = ((width)* y) + x;
-			double perlin = simplexNoise.noise(frequency * vertices[index].position.x, frequency * vertices[index].position.z);
 			for (int i = 0; i < octaves; i++)
 			{
-				vertices[index].position.y += perlin * amplitude;
-				//frequency /= lacunarity;
-				amplitude *= gain;
+				double perlin = simplexNoise.noise(f * vertices[index].position.x, f * vertices[index].position.z);
+				//vertices[index].position.y += perlin;
+				a += b * perlin;          // accumulate values		
+				d.x += b * perlin;								      // accumulate derivatives
+				d.y += b * perlin;
+				d.z += b * perlin;
+				t = XMVector3Transform(XMLoadFloat3(&d), m);
+				XMStoreFloat3(&q, t);
+				d.x *= q.x;
+				d.y *= q.y;
+				d.z *= q.z;
+				b *= s;
+				m = XMMatrixScaling(vertices[index].position.x, vertices[index].position.y, vertices[index].position.z);
+				//vertices[index].position.x *= f;
+				vertices[index].position.y += f;
+				//vertices[index].position.z *= f;
+				m = f * m*m;
 			}
 		}
 	}
