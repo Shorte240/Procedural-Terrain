@@ -1,0 +1,14 @@
+﻿C:\Program Files (x86)\Microsoft Visual Studio\2017\Enterprise\Common7\IDE\VC\VCTargets\Microsoft.CppBuild.targets(391,5): warning MSB8028: The intermediate directory (Debug\) contains files shared from another project (Faulting.vcxproj).  This can lead to incorrect clean and rebuild behavior.
+  compilation object save succeeded; see M:\AG0701a\ProcGen\ProcGen\terrain_ps.cso
+  compilation object save succeeded; see M:\AG0701a\ProcGen\ProcGen\terrain_vs.cso
+  compilation object save succeeded; see M:\AG0701a\ProcGen\ProcGen\colour_ps.cso
+  compilation object save succeeded; see M:\AG0701a\ProcGen\ProcGen\colour_vs.cso
+  compilation object save succeeded; see M:\AG0701a\ProcGen\ProcGen\tessellation_ds.cso
+  compilation object save succeeded; see M:\AG0701a\ProcGen\ProcGen\tessellation_gs.cso
+  compilation object save succeeded; see M:\AG0701a\ProcGen\ProcGen\tessellation_hs.cso
+  compilation object save succeeded; see M:\AG0701a\ProcGen\ProcGen\tessellation_ps.cso
+  compilation object save succeeded; see M:\AG0701a\ProcGen\ProcGen\tessellation_vs.cso
+DXFramework.lib(WICTextureLoader.obj) : warning LNK4099: PDB 'DirectXTK.pdb' was not found with 'DXFramework.lib(WICTextureLoader.obj)' or at 'M:\AG0701a\ProcGen\Debug\DirectXTK.pdb'; linking object as if no debug info
+DXFramework.lib(pch.obj) : warning LNK4099: PDB 'DirectXTK.pdb' was not found with 'DXFramework.lib(pch.obj)' or at 'M:\AG0701a\ProcGen\Debug\DirectXTK.pdb'; linking object as if no debug info
+DXFramework.lib(DDSTextureLoader.obj) : warning LNK4099: PDB 'DirectXTK.pdb' was not found with 'DXFramework.lib(DDSTextureLoader.obj)' or at 'M:\AG0701a\ProcGen\Debug\DirectXTK.pdb'; linking object as if no debug info
+  ProcGen.vcxproj -> M:\AG0701a\ProcGen\Debug\ProcGen.exe
