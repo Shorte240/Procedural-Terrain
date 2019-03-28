@@ -30,9 +30,19 @@ void App1::init(HINSTANCE hinstance, HWND hwnd, int screenWidth, int screenHeigh
 	bottomRight = 30;
 	topLeft = 100;
 	topRight = 0;
+
 	perlinFrequency = 1.0f;
 	perlinScale = 1.0f;
+
+	fBMFrequency = 1.0f;
+	fBMGain = 0.5f;
+	fBMAmplitude = 1.0f;
+	fBMLacunarity = 2.0f;
+	fBMOctaves = 10;
+	fBMScale = 27.6;
+
 	regionCount = 5;
+
 	currentCornerValues = true;
 	setCornerValues = false;
 	randomCornerValues = false;
@@ -178,8 +188,25 @@ void App1::gui()
 		ImGui::TreePop();
 	}
 
-	if (ImGui::Button("fBM")) {
-		terrain->FractalBrownianMotion(renderer->getDevice());
+	if (ImGui::TreeNode("fBM"))
+	{
+		if (ImGui::TreeNode("Values"))
+		{
+			ImGui::InputFloat("Frequency", &fBMFrequency);
+			ImGui::InputFloat("Gain", &fBMGain);
+			ImGui::InputFloat("Amplitude", &fBMAmplitude);
+			ImGui::InputFloat("Lacunarity", &fBMLacunarity);
+			ImGui::InputFloat("Octaves", &fBMOctaves);
+			ImGui::InputFloat("Scale", &fBMScale);
+			ImGui::TreePop();
+		}
+
+		if (ImGui::Button("fBM")) 
+		{
+			terrain->FractalBrownianMotion(renderer->getDevice(), fBMFrequency, fBMGain, fBMAmplitude, fBMLacunarity, fBMOctaves, fBMScale);
+		}
+
+		ImGui::TreePop();
 	}
 
 	if (ImGui::TreeNode("Voronoi"))

@@ -27,7 +27,7 @@ public:
 	void CircleAlgorithm(ID3D11Device* device, float displacement);
 	void MidpointDisplacement(ID3D11Device* device, float displacement, float bottomLeftCornerValue, float bottomRightCornerValue, float topLeftCornerValue, float topRightCornerValue, bool currentCornerValues, bool setCornerValues, bool randomCornerValues);
 	void SimplexNoiseFunction(ID3D11Device * device, float frequency, float scale);
-	void FractalBrownianMotion(ID3D11Device * device);
+	void FractalBrownianMotion(ID3D11Device * device, float frequency_, float gain_, float amplitude_, float lacunarity_, int octaves_, float scale_);
 	void Voronoi(ID3D11Device* device, int regionCount);
 
 private:

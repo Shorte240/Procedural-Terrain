@@ -35,6 +35,7 @@ private:
 	float displacementHeight;
 	float bottomLeft, bottomRight, topLeft, topRight;
 	float perlinFrequency, perlinScale;
+	float fBMFrequency, fBMGain, fBMAmplitude, fBMLacunarity, fBMOctaves, fBMScale;
 	int regionCount;
 	bool currentCornerValues, setCornerValues, randomCornerValues;
 };
