@@ -496,15 +496,14 @@ void Terrain::SimplexNoiseFunction(ID3D11Device * device, float frequency, float
 
 void Terrain::FractalBrownianMotion(ID3D11Device * device)
 {
-	float f = 1.98;  // could be 2.0
-	float s = 0.49;  // could be 0.5
-	float a = 0.0;
-	float b = 0.5;
-	int octaves = 1;
-	XMFLOAT3  d = XMFLOAT3(0.0f, 0.0f, 0.0f);
-	XMMATRIX  m = XMMatrixIdentity();
-	XMVECTOR t;
-	XMFLOAT3  q = XMFLOAT3(0.0f, 0.0f, 0.0f);
+	//for each pixel, get the value total = 0.0f; frequency = 1.0f/(float)hgrid; amplitude = gain;
+	double simplexValue = 0.0;
+	float frequency = 0.1f;
+	float gain = 0.5f;
+	float amplitude = 1.0f;
+	float lacunarity = 2.0f;
+	int octaves = 4;
+	float noiseHeight = 0;
 
 	for (int y = 0; y < height; y++)
 	{
@@ -512,28 +511,30 @@ void Terrain::FractalBrownianMotion(ID3D11Device * device)
 		{
 			int index;
 			index = ((width)* y) + x;
-			for (int i = 0; i < octaves; i++)
+			for (int i = 0; i < octaves; i++) 
 			{
-				double perlin = simplexNoise.noise(f * vertices[index].position.x, f * vertices[index].position.z);
-				//vertices[index].position.y += perlin;
-				a += b * perlin;          // accumulate values		
-				d.x += b * perlin;								      // accumulate derivatives
-				d.y += b * perlin;
-				d.z += b * perlin;
-				t = XMVector3Transform(XMLoadFloat3(&d), m);
-				XMStoreFloat3(&q, t);
-				d.x *= q.x;
-				d.y *= q.y;
-				d.z *= q.z;
-				b *= s;
-				m = XMMatrixScaling(vertices[index].position.x, vertices[index].position.y, vertices[index].position.z);
-				//vertices[index].position.x *= f;
-				vertices[index].position.y += f;
-				//vertices[index].position.z *= f;
-				m = f * m*m;
+				float sampleX = vertices[index].position.x / width * frequency;
+				float sampleY = vertices[index].position.z / height * frequency;
+
+				simplexValue += simplexNoise.noise(sampleX, sampleY);
+				noiseHeight += simplexValue * amplitude;
+
+				amplitude *= gain;
+				frequency *= lacunarity;
 			}
+			vertices[index].position.y += noiseHeight;
 		}
 	}
+
+	/*for (int y = 0; y < height; y++)
+	{
+		for (int x = 0; x < width; x++)
+		{
+
+		}
+	}*/
+
+	//now that we have the value, put it in map[x][y]=total;
 
 	CalculateNormals();
 
