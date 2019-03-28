@@ -494,7 +494,7 @@ void Terrain::SimplexNoiseFunction(ID3D11Device * device, float frequency, float
 	initBuffers(device);
 }
 
-void Terrain::FractalBrownianMotion(ID3D11Device * device, float frequency_, float gain_, float amplitude_, float lacunarity_, int octaves_, float scale_)
+void Terrain::FractalBrownianMotion(ID3D11Device * device, float frequency_, float gain_, float amplitude_, float lacunarity_, int octaves_, float scale_, bool ridged)
 {
 	//for each pixel, get the value total = 0.0f; frequency = 1.0f/(float)hgrid; amplitude = gain;
 	
@@ -519,7 +519,16 @@ void Terrain::FractalBrownianMotion(ID3D11Device * device, float frequency_, flo
 				float sampleY = y / scale * frequency;
 
 				simplexValue += simplexNoise.noise(sampleX, sampleY);
-				noiseHeight += simplexValue * amplitude;
+				if (!ridged)
+				{
+					noiseHeight += simplexValue * amplitude;
+				}
+				else if (ridged)
+				{
+					noiseHeight = simplexValue * amplitude;
+					noiseHeight = abs(noiseHeight);
+					noiseHeight *= -1;
+				}
 
 				amplitude *= gain;
 				frequency *= lacunarity;

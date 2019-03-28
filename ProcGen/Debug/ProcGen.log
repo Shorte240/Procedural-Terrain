@@ -1,12 +1,11 @@
 ﻿  compilation object save succeeded; see M:\AG0701a\ProcGen\ProcGen\colour_ps.cso
-  compilation object save succeeded; see M:\AG0701a\ProcGen\ProcGen\tessellation_ds.cso
   compilation object save succeeded; see M:\AG0701a\ProcGen\ProcGen\tessellation_gs.cso
   compilation object save succeeded; see M:\AG0701a\ProcGen\ProcGen\tessellation_hs.cso
   compilation object save succeeded; see M:\AG0701a\ProcGen\ProcGen\tessellation_ps.cso
   compilation object save succeeded; see M:\AG0701a\ProcGen\ProcGen\tessellation_vs.cso
   App1.cpp
 m:\ag0701a\procgen\procgen\app1.cpp(42): warning C4305: '=': truncation from 'double' to 'float'
-m:\ag0701a\procgen\procgen\app1.cpp(206): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+m:\ag0701a\procgen\procgen\app1.cpp(208): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
   Main.cpp
   Terrain.cpp
 m:\ag0701a\procgen\procgen\terrain.cpp(269): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
@@ -23,9 +22,10 @@ m:\ag0701a\procgen\procgen\terrain.cpp(448): warning C4244: 'initializing': conv
 m:\ag0701a\procgen\procgen\terrain.cpp(453): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
 m:\ag0701a\procgen\procgen\terrain.cpp(467): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
 m:\ag0701a\procgen\procgen\terrain.cpp(488): warning C4244: '+=': conversion from 'double' to 'float', possible loss of data
-m:\ag0701a\procgen\procgen\terrain.cpp(522): warning C4244: '+=': conversion from 'double' to 'float', possible loss of data
-m:\ag0701a\procgen\procgen\terrain.cpp(556): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-m:\ag0701a\procgen\procgen\terrain.cpp(578): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
-m:\ag0701a\procgen\procgen\terrain.cpp(721): warning C4244: 'return': conversion from 'int' to 'float', possible loss of data
+m:\ag0701a\procgen\procgen\terrain.cpp(524): warning C4244: '+=': conversion from 'double' to 'float', possible loss of data
+m:\ag0701a\procgen\procgen\terrain.cpp(528): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+m:\ag0701a\procgen\procgen\terrain.cpp(565): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+m:\ag0701a\procgen\procgen\terrain.cpp(587): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
+m:\ag0701a\procgen\procgen\terrain.cpp(730): warning C4244: 'return': conversion from 'int' to 'float', possible loss of data
   Generating Code...
   ProcGen.vcxproj -> M:\AG0701a\ProcGen\Debug\ProcGen.exe

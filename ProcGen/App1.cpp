@@ -40,6 +40,7 @@ void App1::init(HINSTANCE hinstance, HWND hwnd, int screenWidth, int screenHeigh
 	fBMLacunarity = 2.0f;
 	fBMOctaves = 10;
 	fBMScale = 27.6;
+	fBMRidged = false;
 
 	regionCount = 5;
 
@@ -198,12 +199,13 @@ void App1::gui()
 			ImGui::InputFloat("Lacunarity", &fBMLacunarity);
 			ImGui::InputFloat("Octaves", &fBMOctaves);
 			ImGui::InputFloat("Scale", &fBMScale);
+			ImGui::Checkbox("Ridged", &fBMRidged);
 			ImGui::TreePop();
 		}
 
 		if (ImGui::Button("fBM")) 
 		{
-			terrain->FractalBrownianMotion(renderer->getDevice(), fBMFrequency, fBMGain, fBMAmplitude, fBMLacunarity, fBMOctaves, fBMScale);
+			terrain->FractalBrownianMotion(renderer->getDevice(), fBMFrequency, fBMGain, fBMAmplitude, fBMLacunarity, fBMOctaves, fBMScale, fBMRidged);
 		}
 
 		ImGui::TreePop();
