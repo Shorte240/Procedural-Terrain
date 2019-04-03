@@ -29,6 +29,7 @@ public:
 	void SimplexNoiseFunction(ID3D11Device * device, float frequency, float scale);
 	void FractalBrownianMotion(ID3D11Device * device, float frequency_, float gain_, float amplitude_, float lacunarity_, int octaves_, float scale_, bool ridged);
 	void Voronoi(ID3D11Device* device, int regionCount);
+	void Pick(ID3D11Device * device, XMVECTOR pickRayInWorldSpacePos, XMVECTOR pickRayInWorldSpaceDir);
 
 private:
 	void initBuffers(ID3D11Device* device);
@@ -39,10 +40,12 @@ private:
 	float average2(XMFLOAT3& point, XMFLOAT3& point2);
 	float average4(XMFLOAT3& point, XMFLOAT3& point2, XMFLOAT3& point3, XMFLOAT3& point4);
 	void mpdDisplace(int lx, int rx, int by, int ty, float spread);
+	bool PointInTriangle(XMVECTOR& triV1, XMVECTOR& triV2, XMVECTOR& triV3, XMVECTOR& point);
 
 	int width, height;
 
 	VertexType* vertices;
+	unsigned long* indices2;
 	XMFLOAT2 size_;
 
 	SimplexNoise simplexNoise;

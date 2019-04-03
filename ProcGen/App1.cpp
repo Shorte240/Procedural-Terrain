@@ -79,6 +79,8 @@ bool App1::frame()
 	{
 		return false;
 	}
+
+	InteractWithTerrain();
 	
 	// Render the graphics.
 	result = render();
@@ -88,6 +90,59 @@ bool App1::frame()
 	}
 
 	return true;
+}
+
+void App1::PickRayVector(float mouseX, float mouseY, XMVECTOR & pickRayInWorldSpacePos, XMVECTOR & pickRayInWorldSpaceDir)
+{
+	XMVECTOR pickRayInViewSpaceDir = XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f);
+	XMVECTOR pickRayInViewSpacePos = XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f);
+
+	float PRVecX, PRVecY, PRVecZ;
+
+	// *** ---- MAY NEED TO CHANGE TO RENDERER'S PROJ MATRIX ----- *** //
+	XMFLOAT4X4 camProj;
+	XMStoreFloat4x4(&camProj, renderer->getProjectionMatrix());
+	// *** ---- MAY NEED TO CHANGE TO RENDERER'S PROJ MATRIX ----- *** //
+
+	//Transform 2D pick position on screen space to 3D ray in View space
+	PRVecX = (((2.0f * mouseX) / sWidth) - 1) / camProj(0,0);
+	PRVecY = -(((2.0f * mouseY) / sHeight) - 1) / camProj(1, 1);
+	PRVecZ = 1.0f;	//View space's Z direction ranges from 0 to 1, so we set 1 since the ray goes "into" the screen
+
+	pickRayInViewSpaceDir = XMVectorSet(PRVecX, PRVecY, PRVecZ, 0.0f);
+
+	//Uncomment this line if you want to use the center of the screen (client area)
+	//to be the point that creates the picking ray (eg. first person shooter)
+	//pickRayInViewSpaceDir = XMVectorSet(0.0f, 0.0f, 1.0f, 0.0f);
+
+	// Transform 3D Ray from View space to 3D ray in World space
+	XMMATRIX pickRayToWorldSpaceMatrix;
+	XMVECTOR matInvDeter;	//We don't use this, but the xna matrix inverse function requires the first parameter to not be null
+
+	pickRayToWorldSpaceMatrix = XMMatrixInverse(&matInvDeter, camera->getViewMatrix());	//Inverse of View Space matrix is World space matrix
+
+	pickRayInWorldSpacePos = XMVector3TransformCoord(pickRayInViewSpacePos, pickRayToWorldSpaceMatrix);
+	pickRayInWorldSpaceDir = XMVector3TransformNormal(pickRayInViewSpaceDir, pickRayToWorldSpaceMatrix);
+}
+
+void App1::InteractWithTerrain()
+{
+	if (input->isLeftMouseDown())
+	{
+		POINT mousePos;
+
+		GetCursorPos(&mousePos);
+		ScreenToClient(wnd, &mousePos);
+
+		int mouseX = mousePos.x;
+		int mouseY = mousePos.y;
+
+		XMVECTOR prwsPos, prwsDir;
+		PickRayVector(mouseX, mouseY, prwsPos, prwsDir);
+
+		terrain->Pick(renderer->getDevice(), prwsPos, prwsDir);
+		//input->setLeftMouse(false);
+	}
 }
 
 bool App1::render()

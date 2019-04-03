@@ -23,6 +23,9 @@ public:
 	bool frame();
 
 protected:
+	void PickRayVector(float mouseX, float mouseY, XMVECTOR& pickRayInWorldSpacePos, XMVECTOR& pickRayInWorldSpaceDir);
+	void InteractWithTerrain();
+
 	bool render();
 	void gui();
 
