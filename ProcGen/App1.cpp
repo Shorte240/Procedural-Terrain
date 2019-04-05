@@ -145,6 +145,22 @@ void App1::InteractWithTerrain()
 		terrain->Pick(renderer->getDevice(), prwsPos, prwsDir, displacementHeight, pickDiameter);
 		//input->setLeftMouse(false);
 	}
+	if (input->isRightMouseDown())
+	{
+		POINT mousePos;
+
+		GetCursorPos(&mousePos);
+		ScreenToClient(wnd, &mousePos);
+
+		int mouseX = mousePos.x;
+		int mouseY = mousePos.y;
+
+		XMVECTOR prwsPos, prwsDir;
+		PickRayVector(mouseX, mouseY, prwsPos, prwsDir);
+
+		terrain->Pick(renderer->getDevice(), prwsPos, prwsDir, -displacementHeight, pickDiameter);
+		//input->setRightMouse(false);
+	}
 }
 
 bool App1::render()
