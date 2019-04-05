@@ -31,8 +31,10 @@ protected:
 
 private:
 	TerrainShader* terrainShader;
+	ColourShader* colourShader;
 
 	Terrain* terrain;
+	QuadMesh* quad;
 
 	Light* directionalLight;
 	float displacementHeight;
@@ -43,6 +45,8 @@ private:
 	bool fBMRidged;
 	int regionCount;
 	bool currentCornerValues, setCornerValues, randomCornerValues;
+
+	XMFLOAT3 mwP;
 };
 
 #endif

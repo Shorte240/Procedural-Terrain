@@ -13,8 +13,10 @@ void App1::init(HINSTANCE hinstance, HWND hwnd, int screenWidth, int screenHeigh
 
 	// Create Mesh object and shader object
 	terrain = new Terrain(renderer->getDevice(), renderer->getDeviceContext(), 129, 129, XMFLOAT2(0.5,0.5));
-	
+	quad = new QuadMesh(renderer->getDevice(), renderer->getDeviceContext());
+
 	terrainShader = new TerrainShader(renderer->getDevice(), hwnd);
+	colourShader = new ColourShader(renderer->getDevice(), hwnd);
 
 	textureMgr->loadTexture("Grass", L"../res/grass.png");
 	textureMgr->loadTexture("Slope", L"../res/slope.png");
@@ -161,6 +163,22 @@ void App1::InteractWithTerrain()
 		terrain->Pick(renderer->getDevice(), prwsPos, prwsDir, -displacementHeight, pickDiameter);
 		//input->setRightMouse(false);
 	}
+
+	// Place a quad under the mouse world Pos
+	// To show where the terrain will be altered
+	/*POINT mousePos;
+
+	GetCursorPos(&mousePos);
+	ScreenToClient(wnd, &mousePos);
+
+	int mouseX = mousePos.x;
+	int mouseY = mousePos.y;
+
+	XMVECTOR prwsPos = XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f);
+	XMVECTOR prwsDir = XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f);
+	PickRayVector(mouseX, mouseY, prwsPos, prwsDir);
+
+	mwP = terrain->Pick(renderer->getDevice(), prwsPos, prwsDir);*/
 }
 
 bool App1::render()
@@ -182,6 +200,14 @@ bool App1::render()
 	terrain->sendData(renderer->getDeviceContext());
 	terrainShader->setShaderParameters(renderer->getDeviceContext(), worldMatrix, viewMatrix, projectionMatrix, textureMgr->getTexture("Grass"), textureMgr->getTexture("Slope"), textureMgr->getTexture("Rock"), directionalLight);
 	terrainShader->render(renderer->getDeviceContext(), terrain->getIndexCount());
+
+	//worldMatrix *= XMMatrixRotationRollPitchYaw(3.14/2, 0.0f, 0.0f);
+	//worldMatrix *= XMMatrixTranslation(mwP.x, 1.0f, mwP.z);
+
+	//// Send geometry data, set shader parameters, render object with shader
+	//quad->sendData(renderer->getDeviceContext());
+	//colourShader->setShaderParameters(renderer->getDeviceContext(), worldMatrix, viewMatrix, projectionMatrix);
+	//colourShader->render(renderer->getDeviceContext(), quad->getIndexCount());
 
 	// Render GUI
 	gui();
@@ -301,6 +327,16 @@ void App1::gui()
 	}
 
 	ImGui::InputInt("Pick Diameter", &pickDiameter);
+	if (input->isKeyDown(VK_ADD))
+	{
+		pickDiameter++;
+		input->SetKeyUp(VK_ADD);
+	}
+	else if (input->isKeyDown(VK_SUBTRACT))
+	{
+		pickDiameter--;
+		input->SetKeyUp(VK_SUBTRACT);
+	}
 	
 
 	// Render UI

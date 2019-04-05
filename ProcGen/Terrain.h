@@ -31,6 +31,7 @@ public:
 	void FractalBrownianMotion(ID3D11Device * device, float frequency_, float gain_, float amplitude_, float lacunarity_, int octaves_, float scale_, bool ridged);
 	void Voronoi(ID3D11Device* device, int regionCount);
 	void Pick(ID3D11Device * device, XMVECTOR pickRayInWorldSpacePos, XMVECTOR pickRayInWorldSpaceDir, float displacement, int diameter);
+	//XMFLOAT3 Pick(ID3D11Device * device, XMVECTOR pickRayInWorldSpacePos, XMVECTOR pickRayInWorldSpaceDir);
 
 private:
 	void initBuffers(ID3D11Device* device);
