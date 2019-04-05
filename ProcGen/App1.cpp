@@ -42,6 +42,8 @@ void App1::init(HINSTANCE hinstance, HWND hwnd, int screenWidth, int screenHeigh
 	fBMScale = 27.6;
 	fBMRidged = false;
 
+	pickDiameter = 9;
+
 	regionCount = 5;
 
 	currentCornerValues = true;
@@ -140,7 +142,7 @@ void App1::InteractWithTerrain()
 		XMVECTOR prwsPos, prwsDir;
 		PickRayVector(mouseX, mouseY, prwsPos, prwsDir);
 
-		terrain->Pick(renderer->getDevice(), prwsPos, prwsDir);
+		terrain->Pick(renderer->getDevice(), prwsPos, prwsDir, displacementHeight, pickDiameter);
 		//input->setLeftMouse(false);
 	}
 }
@@ -281,6 +283,8 @@ void App1::gui()
 
 		ImGui::TreePop();
 	}
+
+	ImGui::InputInt("Pick Diameter", &pickDiameter);
 	
 
 	// Render UI

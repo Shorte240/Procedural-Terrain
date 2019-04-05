@@ -7,22 +7,20 @@ m:\ag0701a\procgen\procgen\terrain.cpp(275): warning C4244: 'initializing': conv
 m:\ag0701a\procgen\procgen\terrain.cpp(278): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
 m:\ag0701a\procgen\procgen\terrain.cpp(324): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
 m:\ag0701a\procgen\procgen\terrain.cpp(330): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
-m:\ag0701a\procgen\procgen\terrain.cpp(345): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
-m:\ag0701a\procgen\procgen\terrain.cpp(469): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
-m:\ag0701a\procgen\procgen\terrain.cpp(471): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
-m:\ag0701a\procgen\procgen\terrain.cpp(473): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
-m:\ag0701a\procgen\procgen\terrain.cpp(475): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
-m:\ag0701a\procgen\procgen\terrain.cpp(478): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
-m:\ag0701a\procgen\procgen\terrain.cpp(482): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
-m:\ag0701a\procgen\procgen\terrain.cpp(487): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-m:\ag0701a\procgen\procgen\terrain.cpp(501): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
-m:\ag0701a\procgen\procgen\terrain.cpp(522): warning C4244: '+=': conversion from 'double' to 'float', possible loss of data
-m:\ag0701a\procgen\procgen\terrain.cpp(558): warning C4244: '+=': conversion from 'double' to 'float', possible loss of data
-m:\ag0701a\procgen\procgen\terrain.cpp(562): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
-m:\ag0701a\procgen\procgen\terrain.cpp(599): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
-m:\ag0701a\procgen\procgen\terrain.cpp(621): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
-m:\ag0701a\procgen\procgen\terrain.cpp(855): warning C4244: 'return': conversion from 'int' to 'float', possible loss of data
-DXFramework.lib(WICTextureLoader.obj) : warning LNK4099: PDB 'DirectXTK.pdb' was not found with 'DXFramework.lib(WICTextureLoader.obj)' or at 'M:\AG0701a\ProcGen\Debug\DirectXTK.pdb'; linking object as if no debug info
-DXFramework.lib(pch.obj) : warning LNK4099: PDB 'DirectXTK.pdb' was not found with 'DXFramework.lib(pch.obj)' or at 'M:\AG0701a\ProcGen\Debug\DirectXTK.pdb'; linking object as if no debug info
-DXFramework.lib(DDSTextureLoader.obj) : warning LNK4099: PDB 'DirectXTK.pdb' was not found with 'DXFramework.lib(DDSTextureLoader.obj)' or at 'M:\AG0701a\ProcGen\Debug\DirectXTK.pdb'; linking object as if no debug info
+m:\ag0701a\procgen\procgen\terrain.cpp(357): warning C4244: 'initializing': conversion from 'double' to 'float', possible loss of data
+m:\ag0701a\procgen\procgen\terrain.cpp(367): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+m:\ag0701a\procgen\procgen\terrain.cpp(491): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+m:\ag0701a\procgen\procgen\terrain.cpp(493): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+m:\ag0701a\procgen\procgen\terrain.cpp(495): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+m:\ag0701a\procgen\procgen\terrain.cpp(497): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+m:\ag0701a\procgen\procgen\terrain.cpp(500): warning C4244: 'initializing': conversion from 'double' to 'int', possible loss of data
+m:\ag0701a\procgen\procgen\terrain.cpp(504): warning C4244: 'initializing': conversion from 'int' to 'float', possible loss of data
+m:\ag0701a\procgen\procgen\terrain.cpp(509): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+m:\ag0701a\procgen\procgen\terrain.cpp(523): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+m:\ag0701a\procgen\procgen\terrain.cpp(544): warning C4244: '+=': conversion from 'double' to 'float', possible loss of data
+m:\ag0701a\procgen\procgen\terrain.cpp(580): warning C4244: '+=': conversion from 'double' to 'float', possible loss of data
+m:\ag0701a\procgen\procgen\terrain.cpp(584): warning C4244: '=': conversion from 'double' to 'float', possible loss of data
+m:\ag0701a\procgen\procgen\terrain.cpp(621): warning C4244: 'argument': conversion from 'int' to 'float', possible loss of data
+m:\ag0701a\procgen\procgen\terrain.cpp(643): warning C4244: '=': conversion from 'float' to 'int', possible loss of data
+m:\ag0701a\procgen\procgen\terrain.cpp(888): warning C4244: 'return': conversion from 'int' to 'float', possible loss of data
   ProcGen.vcxproj -> M:\AG0701a\ProcGen\Debug\ProcGen.exe

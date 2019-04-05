@@ -340,6 +340,28 @@ void Terrain::CircleAlgorithm(ID3D11Device * device, float displacement)
 	initBuffers(device);
 }
 
+void Terrain::CircleAlgorithm(ID3D11Device * device, float displacement, XMFLOAT3& point, int diameter)
+{
+	for (int z = 0; z < height; z++)
+	{
+		for (int x = 0; x < width; x++)
+		{
+			int index;
+
+			index = ((width)* z) + x;
+
+			float pd = sqrt((point.x - vertices[index].position.x)*(point.x - vertices[index].position.x) + (point.z - vertices[index].position.z)*(point.z - vertices[index].position.z)) * 2.0f / diameter;	// pd = distFromCircle*2/size
+
+			if (fabs(pd) <= 1.0f)	// if vertex in circle, displace upwards
+			{
+				float diff = displacement / 2.0f + cos(pd*3.14)*displacement / 2.0f;
+
+				vertices[index].position.y += diff;
+			}
+		}
+	}
+}
+
 float Terrain::jitter(XMFLOAT3 & point, float d)
 {
 	return point.y += RandomIntRange(0, d);
@@ -630,7 +652,7 @@ void Terrain::Voronoi(ID3D11Device * device, int regionCount)
 	initBuffers(device);
 }
 
-void Terrain::Pick(ID3D11Device * device, XMVECTOR pickRayInWorldSpacePos, XMVECTOR pickRayInWorldSpaceDir)
+void Terrain::Pick(ID3D11Device * device, XMVECTOR pickRayInWorldSpacePos, XMVECTOR pickRayInWorldSpaceDir, float displacement, int diameter)
 {
 	//Loop through each triangle in the object
 	for (int i = 0; i < indexCount / 3; i++)
@@ -705,9 +727,20 @@ void Terrain::Pick(ID3D11Device * device, XMVECTOR pickRayInWorldSpacePos, XMVEC
 			{
 				//Return the distance to the hit, so you can check all the other pickable objects in your scene
 				//and choose whichever object is closest to the camera
-				vertices[indices2[(i * 3) + 0]].position.y += 1.0f;
-				vertices[indices2[(i * 3) + 1]].position.y += 1.0f;
-				vertices[indices2[(i * 3) + 2]].position.y += 1.0f;
+				
+				int point1Index, point2Index, point3Index;
+				point1Index = indices2[(i * 3) + 0];
+				point2Index = indices2[(i * 3) + 1];
+				point3Index = indices2[(i * 3) + 2];
+
+				/*vertices[point1Index].position.y += 1.0f;
+				vertices[point2Index].position.y += 1.0f;
+				vertices[point3Index].position.y += 1.0f;*/
+
+				XMFLOAT3 p;
+				XMStoreFloat3(&p, pointInPlane);
+
+				CircleAlgorithm(device, displacement, p, diameter);
 				break;
 			}
 		}
