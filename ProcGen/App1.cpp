@@ -45,6 +45,7 @@ void App1::init(HINSTANCE hinstance, HWND hwnd, int screenWidth, int screenHeigh
 	fBMRidged = false;
 
 	pickDiameter = 9;
+	picking = false;
 
 	regionCount = 5;
 
@@ -131,37 +132,40 @@ void App1::PickRayVector(float mouseX, float mouseY, XMVECTOR & pickRayInWorldSp
 
 void App1::InteractWithTerrain()
 {
-	if (input->isLeftMouseDown())
+	if (picking)
 	{
-		POINT mousePos;
+		if (input->isLeftMouseDown())
+		{
+			POINT mousePos;
 
-		GetCursorPos(&mousePos);
-		ScreenToClient(wnd, &mousePos);
+			GetCursorPos(&mousePos);
+			ScreenToClient(wnd, &mousePos);
 
-		int mouseX = mousePos.x;
-		int mouseY = mousePos.y;
+			int mouseX = mousePos.x;
+			int mouseY = mousePos.y;
 
-		XMVECTOR prwsPos, prwsDir;
-		PickRayVector(mouseX, mouseY, prwsPos, prwsDir);
+			XMVECTOR prwsPos, prwsDir;
+			PickRayVector(mouseX, mouseY, prwsPos, prwsDir);
 
-		terrain->Pick(renderer->getDevice(), prwsPos, prwsDir, displacementHeight, pickDiameter);
-		//input->setLeftMouse(false);
-	}
-	if (input->isRightMouseDown())
-	{
-		POINT mousePos;
+			terrain->Pick(renderer->getDevice(), prwsPos, prwsDir, displacementHeight, pickDiameter);
+			//input->setLeftMouse(false);
+		}
+		if (input->isRightMouseDown())
+		{
+			POINT mousePos;
 
-		GetCursorPos(&mousePos);
-		ScreenToClient(wnd, &mousePos);
+			GetCursorPos(&mousePos);
+			ScreenToClient(wnd, &mousePos);
 
-		int mouseX = mousePos.x;
-		int mouseY = mousePos.y;
+			int mouseX = mousePos.x;
+			int mouseY = mousePos.y;
 
-		XMVECTOR prwsPos, prwsDir;
-		PickRayVector(mouseX, mouseY, prwsPos, prwsDir);
+			XMVECTOR prwsPos, prwsDir;
+			PickRayVector(mouseX, mouseY, prwsPos, prwsDir);
 
-		terrain->Pick(renderer->getDevice(), prwsPos, prwsDir, -displacementHeight, pickDiameter);
-		//input->setRightMouse(false);
+			terrain->Pick(renderer->getDevice(), prwsPos, prwsDir, -displacementHeight, pickDiameter);
+			//input->setRightMouse(false);
+		}
 	}
 
 	// Place a quad under the mouse world Pos
@@ -337,6 +341,8 @@ void App1::gui()
 		pickDiameter--;
 		input->SetKeyUp(VK_SUBTRACT);
 	}
+
+	ImGui::Checkbox("Picking Mode", &picking);
 	
 
 	// Render UI

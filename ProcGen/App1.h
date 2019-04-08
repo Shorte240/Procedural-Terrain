@@ -42,6 +42,7 @@ private:
 	float perlinFrequency, perlinScale;
 	float fBMFrequency, fBMGain, fBMAmplitude, fBMLacunarity, fBMOctaves, fBMScale;
 	int pickDiameter;
+	bool picking;
 	bool fBMRidged;
 	int regionCount;
 	bool currentCornerValues, setCornerValues, randomCornerValues;

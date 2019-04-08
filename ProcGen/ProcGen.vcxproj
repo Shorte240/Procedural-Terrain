@@ -125,6 +125,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="LSystem.cpp" />
     <ClCompile Include="SimplexNoise.cpp" />
     <ClCompile Include="Terrain.cpp" />
     <ClCompile Include="TerrainShader.cpp" />
@@ -137,6 +138,7 @@
     <ClCompile Include="TessellationShader.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="LSystem.h" />
     <ClInclude Include="SimplexNoise.h" />
     <ClInclude Include="Terrain.h" />
     <ClInclude Include="TerrainShader.h" />
