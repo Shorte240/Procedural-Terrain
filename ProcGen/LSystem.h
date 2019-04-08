@@ -2,20 +2,23 @@
 // Generates a river
 #pragma once
 
+#include <d3d11.h>
 #include "DXF.h"
+#include "ColourShader.h"
 #include <map>
 #include <stack>
 
 class LSystem
 {
 public:
-	LSystem();
+	LSystem(ID3D11Device* device, HWND hwnd);
 	~LSystem();
 
 	struct SavedTransform
 	{
 		XMFLOAT3 position;
 		float rotation;
+		XMMATRIX world;
 	};
 
 	int iterations;
@@ -27,15 +30,20 @@ public:
 	float maxBranchLength;
 	float variance;
 
-	void Awake();
-	void Generate();
+	void Awake(ID3D11Device* device, ID3D11DeviceContext* deviceContext, XMFLOAT3& position, float &rot, XMMATRIX& world, XMMATRIX& view, XMMATRIX& proj);
+	void Generate(ID3D11Device* device, ID3D11DeviceContext* deviceContext, XMFLOAT3& position, float &rot, XMMATRIX& world, XMMATRIX& view, XMMATRIX& proj);
+	void Render(ID3D11DeviceContext* deviceContext, XMMATRIX view, XMMATRIX proj);
 	float RandomIntRange(int min, int max);
+	std::vector<QuadMesh*> quadVector;
 
 private:
+	ColourShader * colourShader;
+
 	const string axiom = "X";
 	std::map<char, string> rules;
 	std::stack<SavedTransform> savedTransforms;
 	XMFLOAT3 initialPosition;
+	std::vector<XMMATRIX> worlds;
 
 	std::string currentPath = "";
 	float randomRotations[5];

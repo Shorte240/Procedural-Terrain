@@ -13,10 +13,9 @@ void App1::init(HINSTANCE hinstance, HWND hwnd, int screenWidth, int screenHeigh
 
 	// Create Mesh object and shader object
 	terrain = new Terrain(renderer->getDevice(), renderer->getDeviceContext(), 129, 129, XMFLOAT2(0.5,0.5));
-	quad = new QuadMesh(renderer->getDevice(), renderer->getDeviceContext());
+	lSystem = new LSystem(renderer->getDevice(), hwnd);
 
 	terrainShader = new TerrainShader(renderer->getDevice(), hwnd);
-	colourShader = new ColourShader(renderer->getDevice(), hwnd);
 
 	textureMgr->loadTexture("Grass", L"../res/grass.png");
 	textureMgr->loadTexture("Slope", L"../res/slope.png");
@@ -52,6 +51,8 @@ void App1::init(HINSTANCE hinstance, HWND hwnd, int screenWidth, int screenHeigh
 	currentCornerValues = true;
 	setCornerValues = false;
 	randomCornerValues = false;
+
+	done = false;
 }
 
 
@@ -207,11 +208,15 @@ bool App1::render()
 
 	//worldMatrix *= XMMatrixRotationRollPitchYaw(3.14/2, 0.0f, 0.0f);
 	//worldMatrix *= XMMatrixTranslation(mwP.x, 1.0f, mwP.z);
+	if (!done)
+	{
+		XMFLOAT3 p = XMFLOAT3(1.0f, 1.0f, 1.0f);
+		float r = 5.0f;
+		lSystem->Awake(renderer->getDevice(), renderer->getDeviceContext(), p, r, worldMatrix, viewMatrix, projectionMatrix);
+		done = true;
+	}
 
-	//// Send geometry data, set shader parameters, render object with shader
-	//quad->sendData(renderer->getDeviceContext());
-	//colourShader->setShaderParameters(renderer->getDeviceContext(), worldMatrix, viewMatrix, projectionMatrix);
-	//colourShader->render(renderer->getDeviceContext(), quad->getIndexCount());
+	lSystem->Render(renderer->getDeviceContext(), viewMatrix, projectionMatrix);
 
 	// Render GUI
 	gui();

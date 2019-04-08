@@ -4,13 +4,13 @@
 
 // Includes
 #include "DXF.h"	// include dxframework
-#include "ColourShader.h"
 #include "ColourTriangle.h"
 #include "ColourRect.h"
 #include "TessellatedPlane.h"
 #include "TessellationShader.h"
 #include "Terrain.h"
 #include "TerrainShader.h"
+#include "LSystem.h"
 
 class App1 : public BaseApplication
 {
@@ -31,10 +31,9 @@ protected:
 
 private:
 	TerrainShader* terrainShader;
-	ColourShader* colourShader;
+	LSystem* lSystem;
 
 	Terrain* terrain;
-	QuadMesh* quad;
 
 	Light* directionalLight;
 	float displacementHeight;
@@ -46,6 +45,7 @@ private:
 	bool fBMRidged;
 	int regionCount;
 	bool currentCornerValues, setCornerValues, randomCornerValues;
+	bool done;
 
 	XMFLOAT3 mwP;
 };

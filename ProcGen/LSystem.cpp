@@ -1,17 +1,26 @@
+// L-System cpp
+// Generates a river
 #include "LSystem.h"
 
-
-
-LSystem::LSystem()
+LSystem::LSystem(ID3D11Device* device, HWND hwnd)
 {
-}
+	iterations = 3;
+	angle = 12.5f;
+	width = 1.0f;
+	minLeafLength = 0.5f;
+	maxLeafLength = 1.0f;
+	minBranchLength = 1.0f;
+	maxBranchLength = 2.0f;
+	variance = 2.0f;
 
+	colourShader = new ColourShader(device, hwnd);
+}
 
 LSystem::~LSystem()
 {
 }
 
-void LSystem::Awake()
+void LSystem::Awake(ID3D11Device* device, ID3D11DeviceContext* deviceContext, XMFLOAT3& position_, float &rot_, XMMATRIX& world_, XMMATRIX& view_, XMMATRIX& proj_)
 {
 	for (int i = 0; i < 5; i++)
 	{
@@ -21,10 +30,10 @@ void LSystem::Awake()
 	rules.insert(std::pair<char, string>('X', "[-FX][+FX][FX]"));
 	rules.insert(std::pair<char, string>('F', "FF"));
 
-	Generate();
+	Generate(device, deviceContext, position_, rot_, world_, view_, proj_);
 }
 
-void LSystem::Generate()
+void LSystem::Generate(ID3D11Device* device, ID3D11DeviceContext* deviceContext, XMFLOAT3& position_, float &rot_, XMMATRIX& world_, XMMATRIX& view_, XMMATRIX& proj_)
 {
 	currentPath = axiom;
 
@@ -36,11 +45,12 @@ void LSystem::Generate()
 
 		for (int j = 0; j < currentPathChars.length(); j++)
 		{
-			//stringBuilder.append(rules.contains(currentPath[j]) ? rules[currentPathChars[j]] : currentPathChars[j].ToString());
+			string s = &currentPathChars[j];
+			stringBuilder.append(rules.find(currentPath[j]) != rules.end() ? rules[currentPathChars[j]] : s);
 		}
 
-		// currentPath = stringBuilder.ToString();
-		// stringBuilder = new StringBuilder();
+		currentPath = stringBuilder;
+		stringBuilder = "";
 	}
 
 	for (int i = 0; i < currentPath.length(); i++)
@@ -49,7 +59,7 @@ void LSystem::Generate()
 		{
 		case 'F':
 		{
-			//initialPosition = transform.position;
+			initialPosition = position_;
 			bool isLeaf = false;
 
 			//GameObject currentElement;
@@ -61,6 +71,7 @@ void LSystem::Generate()
 			else
 			{
 				//currentElement = Instantiate(branch);
+				isLeaf = false;
 			}
 
 			//currentElement.transform.SetParent(tree.transform);
@@ -70,10 +81,14 @@ void LSystem::Generate()
 			if (isLeaf)
 			{
 				//transform.Translate(Vector3.up * 2f * RandomIntRange(minLeafLength, maxLeafLength));
+				float translation = 2.0f * RandomIntRange(minLeafLength, maxLeafLength);
+				world_ *= XMMatrixTranslation(0 * translation, 1.0f * translation, 0.0f * translation);
 			}
 			else
 			{
 				//transform.Translate(Vector3.up * 2f * RandomIntRange(minBranchLength, maxBranchLength));
+				float translation = 2.0f * RandomIntRange(minBranchLength, maxBranchLength);
+				world_ *= XMMatrixTranslation(0 * translation, 1.0f * translation, 0.0f * translation);
 			}
 
 			//currentTreeElement.lineRenderer.startWidth = width;
@@ -86,39 +101,62 @@ void LSystem::Generate()
 			break;
 
 		case '+':
+		{
 			//transform.Rotate(Vector3.forward * angle * (1f + variance / 100f + randomRotations[i % 5]));
+			float rotation = angle * (1.0f + variance / 100.0f + randomRotations[i % 5]);
+			world_ *= XMMatrixRotationRollPitchYaw(0 * rotation, 0.0f * rotation, 1.0f * rotation);
 			break;
-
+		}
 		case '-':
+		{
 			//transform.Rotate(Vector3.back * angle * (1f + variance / 100f + randomRotations[i % 5]));
+			float rotation = angle * (1.0f + variance / 100.0f + randomRotations[i % 5]);
+			world_ *= XMMatrixRotationRollPitchYaw(0 * rotation, 0.0f * rotation, -1.0f * rotation);
 			break;
-
+		}
 		case '*':
+		{
 			//transform.Rotate(Vector3.up * 120f * (1f + variance / 100f + randomRotations[i % 5]));
+			float rotation = 120.f * (1.0f + variance / 100.f + randomRotations[i % 5]);
+			world_ *= XMMatrixRotationRollPitchYaw(0 * rotation, 1.0f * rotation, 0.0f * rotation);
 			break;
-
+		}
 		case '/':
+		{
 			//transform.Rotate(Vector3.down * 120f * (1f + variance / 100f + randomRotations[i % 5]));
+			float rotation = 120.f * (1.0f + variance / 100.f + randomRotations[i % 5]);
+			world_ *= XMMatrixRotationRollPitchYaw(0 * rotation, -1.0f * rotation, 0.0f * rotation);
 			break;
-
+		}
 		case '[':
-			//transformStack.Push(new SavedTransform()
-			//{
-			//	position = transform.position;
-			//	rotation = transform.rotation;
-			//});
+		{
+			SavedTransform s = { position_, rot_, world_ };
+			savedTransforms.push(s);
 			break;
-
+		}
 		case ']':
-			//SavedTransform savedTransform = transformStack.Pop();
-
-			//transform.position = savedTransform.position;
-			//transform.rotation = savedTransform.rotation;
+			SavedTransform savedTransform = savedTransforms.top();
+			/*position_ = savedTransform.position;
+			rot_ = savedTransform.rotation;
+			world_ = savedTransform.world;*/
+			worlds.push_back(world_);
+			quadVector.push_back(new QuadMesh(device, deviceContext));
+			//savedTransforms.pop();
 			break;
 
 		default:
 			break;
 		}
+	}
+}
+
+void LSystem::Render(ID3D11DeviceContext* deviceContext, XMMATRIX view, XMMATRIX proj)
+{
+	for (int i = 0; i < quadVector.size(); i++)
+	{
+		quadVector[i]->sendData(deviceContext);
+		colourShader->setShaderParameters(deviceContext, worlds[i], view, proj);
+		colourShader->render(deviceContext, quadVector[i]->getIndexCount());
 	}
 }
 

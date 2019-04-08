@@ -1,9 +1,10 @@
 ﻿  compilation object save succeeded; see M:\AG0701a\ProcGen\ProcGen\colour_ps.cso
-  compilation object save succeeded; see M:\AG0701a\ProcGen\ProcGen\tessellation_gs.cso
-  compilation object save succeeded; see M:\AG0701a\ProcGen\ProcGen\tessellation_hs.cso
   compilation object save succeeded; see M:\AG0701a\ProcGen\ProcGen\tessellation_vs.cso
   LSystem.cpp
-m:\ag0701a\procgen\procgen\lsystem.cpp(37): warning C4018: '<': signed/unsigned mismatch
 m:\ag0701a\procgen\procgen\lsystem.cpp(46): warning C4018: '<': signed/unsigned mismatch
-m:\ag0701a\procgen\procgen\lsystem.cpp(127): warning C4244: 'return': conversion from 'int' to 'float', possible loss of data
+m:\ag0701a\procgen\procgen\lsystem.cpp(56): warning C4018: '<': signed/unsigned mismatch
+m:\ag0701a\procgen\procgen\lsystem.cpp(84): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+m:\ag0701a\procgen\procgen\lsystem.cpp(90): warning C4244: 'argument': conversion from 'float' to 'int', possible loss of data
+m:\ag0701a\procgen\procgen\lsystem.cpp(155): warning C4018: '<': signed/unsigned mismatch
+m:\ag0701a\procgen\procgen\lsystem.cpp(165): warning C4244: 'return': conversion from 'int' to 'float', possible loss of data
   ProcGen.vcxproj -> M:\AG0701a\ProcGen\Debug\ProcGen.exe
