@@ -34,6 +34,7 @@ private:
 	Terrain* terrain;
 
 	Light* directionalLight;
+
 	float displacementHeight;
 	float bottomLeft, bottomRight, topLeft, topRight;
 	float perlinFrequency, perlinScale;
@@ -43,7 +44,6 @@ private:
 	bool fBMRidged;
 	int regionCount;
 	bool currentCornerValues, setCornerValues, randomCornerValues;
-	bool done;
 
 	XMFLOAT3 mwP;
 };

@@ -51,8 +51,6 @@ void App1::init(HINSTANCE hinstance, HWND hwnd, int screenWidth, int screenHeigh
 	currentCornerValues = true;
 	setCornerValues = false;
 	randomCornerValues = false;
-
-	done = false;
 }
 
 
@@ -208,13 +206,6 @@ bool App1::render()
 
 	//worldMatrix *= XMMatrixRotationRollPitchYaw(3.14/2, 0.0f, 0.0f);
 	//worldMatrix *= XMMatrixTranslation(mwP.x, 1.0f, mwP.z);
-	if (!done)
-	{
-		XMFLOAT3 p = XMFLOAT3(1.0f, 1.0f, 1.0f);
-		float r = 5.0f;
-		lSystem->Awake(renderer->getDevice(), renderer->getDeviceContext(), p, r, worldMatrix, viewMatrix, projectionMatrix);
-		done = true;
-	}
 
 	lSystem->Render(renderer->getDeviceContext(), viewMatrix, projectionMatrix);
 
@@ -335,19 +326,51 @@ void App1::gui()
 		ImGui::TreePop();
 	}
 
-	ImGui::InputInt("Pick Diameter", &pickDiameter);
-	if (input->isKeyDown(VK_ADD))
+	if (ImGui::TreeNode("Picking"))
 	{
-		pickDiameter++;
-		input->SetKeyUp(VK_ADD);
-	}
-	else if (input->isKeyDown(VK_SUBTRACT))
-	{
-		pickDiameter--;
-		input->SetKeyUp(VK_SUBTRACT);
+		ImGui::InputInt("Pick Diameter", &pickDiameter);
+		if (input->isKeyDown(VK_ADD))
+		{
+			pickDiameter++;
+			input->SetKeyUp(VK_ADD);
+		}
+		else if (input->isKeyDown(VK_SUBTRACT))
+		{
+			pickDiameter--;
+			input->SetKeyUp(VK_SUBTRACT);
+		}
+
+		ImGui::Checkbox("Picking Mode", &picking);
+
+		ImGui::TreePop();
 	}
 
-	ImGui::Checkbox("Picking Mode", &picking);
+	if (ImGui::TreeNode("L-Systems"))
+	{
+		if (ImGui::TreeNode("Variables"))
+		{
+			ImGui::InputInt("Iterations", &lSystem->lSystemParams.iterations);
+			ImGui::InputFloat("Angle", &lSystem->lSystemParams.angle);
+			ImGui::InputFloat("Width", &lSystem->lSystemParams.width);
+			ImGui::InputFloat("Min Leaf Length", &lSystem->lSystemParams.minLeafLength);
+			ImGui::InputFloat("Max Leaf Length", &lSystem->lSystemParams.maxLeafLength);
+			ImGui::InputFloat("Min Branch Length", &lSystem->lSystemParams.minBranchLength);
+			ImGui::InputFloat("Max Branch Length", &lSystem->lSystemParams.maxBranchLength);
+			ImGui::InputFloat("Variance", &lSystem->lSystemParams.variance);
+			ImGui::TreePop();
+		}
+
+		if (ImGui::Button("L-System"))
+		{
+			XMMATRIX worldMatrix, viewMatrix, projectionMatrix;
+			worldMatrix = renderer->getWorldMatrix();
+			viewMatrix = camera->getViewMatrix();
+			projectionMatrix = renderer->getProjectionMatrix();
+			lSystem->Generate(renderer->getDevice(), renderer->getDeviceContext(), worldMatrix, viewMatrix, projectionMatrix);
+		}
+
+		ImGui::TreePop();
+	}
 	
 
 	// Render UI
