@@ -27,7 +27,7 @@ void LSystem::Awake(ID3D11Device* device, ID3D11DeviceContext* deviceContext, XM
 		randomRotations[i] = RandomIntRange(-1, 1);
 	}
 
-	rules.insert(std::pair<char, string>('X', "[-FX][+FX][FX]"));
+	rules.insert(std::pair<char, string>('X', "[-FX][+FX]"));
 	rules.insert(std::pair<char, string>('F', "FF"));
 
 	Generate(device, deviceContext, position_, rot_, world_, view_, proj_);
@@ -37,20 +37,29 @@ void LSystem::Generate(ID3D11Device* device, ID3D11DeviceContext* deviceContext,
 {
 	currentPath = axiom;
 
-	string stringBuilder;
 
 	for (int i = 0; i < iterations; i++)
 	{
+		string stringBuilder;
 		string currentPathChars = currentPath;
 
 		for (int j = 0; j < currentPathChars.length(); j++)
 		{
-			string s = &currentPathChars[j];
-			stringBuilder.append(rules.find(currentPath[j]) != rules.end() ? rules[currentPathChars[j]] : s);
+			char s = currentPathChars[j];
+			string n;
+			if (rules.find(currentPath[j]) != rules.end())
+			{
+				n = rules[currentPathChars[j]];
+			}
+			else
+			{
+				n = s;
+			}
+			//std::replace(stringBuilder.begin(), stringBuilder.end(), currentPath[j], n[j]);
+			stringBuilder.append(rules.find(currentPath[j]) != rules.end() ? rules[currentPathChars[j]] : n);
 		}
 
 		currentPath = stringBuilder;
-		stringBuilder = "";
 	}
 
 	for (int i = 0; i < currentPath.length(); i++)
@@ -103,29 +112,29 @@ void LSystem::Generate(ID3D11Device* device, ID3D11DeviceContext* deviceContext,
 		case '+':
 		{
 			//transform.Rotate(Vector3.forward * angle * (1f + variance / 100f + randomRotations[i % 5]));
-			float rotation = angle * (1.0f + variance / 100.0f + randomRotations[i % 5]);
-			world_ *= XMMatrixRotationRollPitchYaw(0 * rotation, 0.0f * rotation, 1.0f * rotation);
+			float rotation = angle;// *(1.0f + variance / 100.0f + randomRotations[i % 5]);
+			world_ *= XMMatrixRotationRollPitchYaw(0.0f * rotation, 0.0f * rotation, 1.0f * rotation);
 			break;
 		}
 		case '-':
 		{
 			//transform.Rotate(Vector3.back * angle * (1f + variance / 100f + randomRotations[i % 5]));
-			float rotation = angle * (1.0f + variance / 100.0f + randomRotations[i % 5]);
-			world_ *= XMMatrixRotationRollPitchYaw(0 * rotation, 0.0f * rotation, -1.0f * rotation);
+			float rotation = angle;// *(1.0f + variance / 100.0f + randomRotations[i % 5]);
+			world_ *= XMMatrixRotationRollPitchYaw(0.0f * rotation, 0.0f * rotation, -1.0f * rotation);
 			break;
 		}
 		case '*':
 		{
 			//transform.Rotate(Vector3.up * 120f * (1f + variance / 100f + randomRotations[i % 5]));
 			float rotation = 120.f * (1.0f + variance / 100.f + randomRotations[i % 5]);
-			world_ *= XMMatrixRotationRollPitchYaw(0 * rotation, 1.0f * rotation, 0.0f * rotation);
+			//world_ *= XMMatrixRotationRollPitchYaw(0 * rotation, 1.0f * rotation, 0.0f * rotation);
 			break;
 		}
 		case '/':
 		{
 			//transform.Rotate(Vector3.down * 120f * (1f + variance / 100f + randomRotations[i % 5]));
 			float rotation = 120.f * (1.0f + variance / 100.f + randomRotations[i % 5]);
-			world_ *= XMMatrixRotationRollPitchYaw(0 * rotation, -1.0f * rotation, 0.0f * rotation);
+			//world_ *= XMMatrixRotationRollPitchYaw(0 * rotation, -1.0f * rotation, 0.0f * rotation);
 			break;
 		}
 		case '[':
@@ -137,9 +146,9 @@ void LSystem::Generate(ID3D11Device* device, ID3D11DeviceContext* deviceContext,
 		case ']':
 			SavedTransform savedTransform = savedTransforms.top();
 			/*position_ = savedTransform.position;
-			rot_ = savedTransform.rotation;
-			world_ = savedTransform.world;*/
+			rot_ = savedTransform.rotation;*/
 			worlds.push_back(world_);
+			world_ = savedTransform.world;
 			quadVector.push_back(new QuadMesh(device, deviceContext));
 			//savedTransforms.pop();
 			break;

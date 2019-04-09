@@ -7,6 +7,7 @@
 #include "ColourShader.h"
 #include <map>
 #include <stack>
+#include <algorithm>
 
 class LSystem
 {
