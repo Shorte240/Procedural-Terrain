@@ -4,7 +4,7 @@
 
 LSystem::LSystem(ID3D11Device* device, HWND hwnd)
 {
-	iterations = 2;
+	iterations = 3;
 	angle = 12.5f;
 	width = 0.5f;
 	minLeafLength = 0.5f;
@@ -24,7 +24,7 @@ void LSystem::Awake(ID3D11Device* device, ID3D11DeviceContext* deviceContext, XM
 {
 	for (int i = 0; i < 5; i++)
 	{
-		randomRotations[i] = RandomIntRange(-1, 1);
+		randomRotations[i] = RandomFloatInRange(-1, 1);
 	}
 
 	rules.insert(std::pair<char, string>('X', "[-FX][+FX]"));
@@ -81,13 +81,13 @@ void LSystem::Generate(ID3D11Device* device, ID3D11DeviceContext* deviceContext,
 			if (isLeaf)
 			{
 				// Translate up along leaf length;
-				float translation = 2.0f * maxLeafLength;// RandomIntRange(minLeafLength, maxLeafLength);
+				float translation = minLeafLength;//RandomFloatInRange(minLeafLength, maxLeafLength);
 				world_ *= XMMatrixTranslation(0 * translation, 1.0f * translation, 0.0f * translation);
 			}
 			else
 			{
 				// Translate up along branch length;
-				float translation = 2.0f * maxBranchLength;// RandomIntRange(minBranchLength, maxBranchLength);
+				float translation = maxBranchLength;//RandomFloatInRange(minBranchLength, maxBranchLength);
 				world_ *= XMMatrixTranslation(0 * translation, 1.0f * translation, 0.0f * translation);
 			}
 			break;
@@ -137,7 +137,7 @@ void LSystem::Generate(ID3D11Device* device, ID3D11DeviceContext* deviceContext,
 			rot_ = savedTransform.rotation;*/
 			worlds.push_back(world_);
 			world_ = savedTransform.world;
-			quadVector.push_back(new RiverQuad(device, deviceContext, width, width));
+			quadVector.push_back(new RiverQuad(device, deviceContext, 0.125f, width));
 			savedTransforms.pop();
 			break;
 
@@ -157,7 +157,10 @@ void LSystem::Render(ID3D11DeviceContext* deviceContext, XMMATRIX view, XMMATRIX
 	}
 }
 
-float LSystem::RandomIntRange(int min, int max)
+float LSystem::RandomFloatInRange(float min, float max)
 {
-	return (min + (std::rand() % (max - min + 1)));
+	float random = ((float)rand()) / (float)RAND_MAX;
+	float diff = max - min;
+	float r = random * diff;
+	return min + r;
 }

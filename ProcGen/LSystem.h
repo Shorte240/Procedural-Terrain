@@ -34,7 +34,7 @@ public:
 	void Awake(ID3D11Device* device, ID3D11DeviceContext* deviceContext, XMFLOAT3& position, float &rot, XMMATRIX& world, XMMATRIX& view, XMMATRIX& proj);
 	void Generate(ID3D11Device* device, ID3D11DeviceContext* deviceContext, XMFLOAT3& position, float &rot, XMMATRIX& world, XMMATRIX& view, XMMATRIX& proj);
 	void Render(ID3D11DeviceContext* deviceContext, XMMATRIX view, XMMATRIX proj);
-	float RandomIntRange(int min, int max);
+	float RandomFloatInRange(float min, float max);
 	std::vector<RiverQuad*> quadVector;
 
 private:
