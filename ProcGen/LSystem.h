@@ -5,9 +5,9 @@
 #include <d3d11.h>
 #include "DXF.h"
 #include "ColourShader.h"
+#include "RiverQuad.h"
 #include <map>
 #include <stack>
-#include <algorithm>
 
 class LSystem
 {
@@ -35,7 +35,7 @@ public:
 	void Generate(ID3D11Device* device, ID3D11DeviceContext* deviceContext, XMFLOAT3& position, float &rot, XMMATRIX& world, XMMATRIX& view, XMMATRIX& proj);
 	void Render(ID3D11DeviceContext* deviceContext, XMMATRIX view, XMMATRIX proj);
 	float RandomIntRange(int min, int max);
-	std::vector<QuadMesh*> quadVector;
+	std::vector<RiverQuad*> quadVector;
 
 private:
 	ColourShader * colourShader;

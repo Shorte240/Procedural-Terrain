@@ -4,8 +4,6 @@
 
 // Includes
 #include "DXF.h"	// include dxframework
-#include "ColourTriangle.h"
-#include "ColourRect.h"
 #include "TessellatedPlane.h"
 #include "TessellationShader.h"
 #include "Terrain.h"

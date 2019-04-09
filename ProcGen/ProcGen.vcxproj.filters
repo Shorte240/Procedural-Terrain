@@ -42,12 +42,6 @@
     <ClCompile Include="Main.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="ColourRect.cpp">
-      <Filter>Source Files\Meshes</Filter>
-    </ClCompile>
-    <ClCompile Include="ColourTriangle.cpp">
-      <Filter>Source Files\Meshes</Filter>
-    </ClCompile>
     <ClCompile Include="TessellatedPlane.cpp">
       <Filter>Source Files\Meshes</Filter>
     </ClCompile>
@@ -69,6 +63,9 @@
     <ClCompile Include="LSystem.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="RiverQuad.cpp">
+      <Filter>Source Files\Meshes</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="App1.h">
@@ -76,12 +73,6 @@
     </ClInclude>
     <ClInclude Include="resource.h">
       <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="ColourRect.h">
-      <Filter>Header Files\Meshes</Filter>
-    </ClInclude>
-    <ClInclude Include="ColourTriangle.h">
-      <Filter>Header Files\Meshes</Filter>
     </ClInclude>
     <ClInclude Include="TessellatedPlane.h">
       <Filter>Header Files\Meshes</Filter>
@@ -103,6 +94,9 @@
     </ClInclude>
     <ClInclude Include="LSystem.h">
       <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="RiverQuad.h">
+      <Filter>Header Files\Meshes</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

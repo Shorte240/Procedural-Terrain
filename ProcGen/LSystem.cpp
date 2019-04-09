@@ -4,9 +4,9 @@
 
 LSystem::LSystem(ID3D11Device* device, HWND hwnd)
 {
-	iterations = 3;
+	iterations = 2;
 	angle = 12.5f;
-	width = 1.0f;
+	width = 0.5f;
 	minLeafLength = 0.5f;
 	maxLeafLength = 1.0f;
 	minBranchLength = 1.0f;
@@ -37,7 +37,6 @@ void LSystem::Generate(ID3D11Device* device, ID3D11DeviceContext* deviceContext,
 {
 	currentPath = axiom;
 
-
 	for (int i = 0; i < iterations; i++)
 	{
 		string stringBuilder;
@@ -55,7 +54,6 @@ void LSystem::Generate(ID3D11Device* device, ID3D11DeviceContext* deviceContext,
 			{
 				n = s;
 			}
-			//std::replace(stringBuilder.begin(), stringBuilder.end(), currentPath[j], n[j]);
 			stringBuilder.append(rules.find(currentPath[j]) != rules.end() ? rules[currentPathChars[j]] : n);
 		}
 
@@ -71,38 +69,27 @@ void LSystem::Generate(ID3D11Device* device, ID3D11DeviceContext* deviceContext,
 			initialPosition = position_;
 			bool isLeaf = false;
 
-			//GameObject currentElement;
-			if (currentPath[i + 1] % currentPath.length() == 'X' || currentPath[i + 3] % currentPath.length() == 'F' && currentPath[i + 4] % currentPath.length() == 'X')
+			if (currentPath[i + 1] == 'X' || currentPath[i + 3] == 'F' && currentPath[i + 4] == 'X')
 			{
-				//currentElement = Instantiate(leaf);
 				isLeaf = true;
 			}
 			else
 			{
-				//currentElement = Instantiate(branch);
 				isLeaf = false;
 			}
 
-			//currentElement.transform.SetParent(tree.transform);
-
-			//TreeElement currentTreeElement = currentElement.GetComponent<TreeElement>();
-
 			if (isLeaf)
 			{
-				//transform.Translate(Vector3.up * 2f * RandomIntRange(minLeafLength, maxLeafLength));
-				float translation = 2.0f * RandomIntRange(minLeafLength, maxLeafLength);
+				// Translate up along leaf length;
+				float translation = 2.0f * maxLeafLength;// RandomIntRange(minLeafLength, maxLeafLength);
 				world_ *= XMMatrixTranslation(0 * translation, 1.0f * translation, 0.0f * translation);
 			}
 			else
 			{
-				//transform.Translate(Vector3.up * 2f * RandomIntRange(minBranchLength, maxBranchLength));
-				float translation = 2.0f * RandomIntRange(minBranchLength, maxBranchLength);
+				// Translate up along branch length;
+				float translation = 2.0f * maxBranchLength;// RandomIntRange(minBranchLength, maxBranchLength);
 				world_ *= XMMatrixTranslation(0 * translation, 1.0f * translation, 0.0f * translation);
 			}
-
-			//currentTreeElement.lineRenderer.startWidth = width;
-			//currentTreeElement.lineRenderer.endWidth = width;
-			//currentTreeElement.lineRenderer.sharedMaterial = currentTreeElement.material;
 			break;
 		}
 
@@ -111,34 +98,35 @@ void LSystem::Generate(ID3D11Device* device, ID3D11DeviceContext* deviceContext,
 
 		case '+':
 		{
-			//transform.Rotate(Vector3.forward * angle * (1f + variance / 100f + randomRotations[i % 5]));
+			// Rotate clockwise in the Z-axis
 			float rotation = angle;// *(1.0f + variance / 100.0f + randomRotations[i % 5]);
 			world_ *= XMMatrixRotationRollPitchYaw(0.0f * rotation, 0.0f * rotation, 1.0f * rotation);
 			break;
 		}
 		case '-':
 		{
-			//transform.Rotate(Vector3.back * angle * (1f + variance / 100f + randomRotations[i % 5]));
+			// Rotate counter-clockwise in the Z-axis
 			float rotation = angle;// *(1.0f + variance / 100.0f + randomRotations[i % 5]);
 			world_ *= XMMatrixRotationRollPitchYaw(0.0f * rotation, 0.0f * rotation, -1.0f * rotation);
 			break;
 		}
 		case '*':
 		{
-			//transform.Rotate(Vector3.up * 120f * (1f + variance / 100f + randomRotations[i % 5]));
+			// Rotate positively in the Y-axis
 			float rotation = 120.f * (1.0f + variance / 100.f + randomRotations[i % 5]);
 			//world_ *= XMMatrixRotationRollPitchYaw(0 * rotation, 1.0f * rotation, 0.0f * rotation);
 			break;
 		}
 		case '/':
 		{
-			//transform.Rotate(Vector3.down * 120f * (1f + variance / 100f + randomRotations[i % 5]));
+			// Rotate negatively in the Y-axis
 			float rotation = 120.f * (1.0f + variance / 100.f + randomRotations[i % 5]);
 			//world_ *= XMMatrixRotationRollPitchYaw(0 * rotation, -1.0f * rotation, 0.0f * rotation);
 			break;
 		}
 		case '[':
 		{
+			// Save where we are
 			SavedTransform s = { position_, rot_, world_ };
 			savedTransforms.push(s);
 			break;
@@ -149,8 +137,8 @@ void LSystem::Generate(ID3D11Device* device, ID3D11DeviceContext* deviceContext,
 			rot_ = savedTransform.rotation;*/
 			worlds.push_back(world_);
 			world_ = savedTransform.world;
-			quadVector.push_back(new QuadMesh(device, deviceContext));
-			//savedTransforms.pop();
+			quadVector.push_back(new RiverQuad(device, deviceContext, width, width));
+			savedTransforms.pop();
 			break;
 
 		default:

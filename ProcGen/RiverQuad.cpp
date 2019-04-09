@@ -1,19 +1,21 @@
-#include "ColourRect.h"
+#include "RiverQuad.h"
 
 
-ColourRect::ColourRect(ID3D11Device * device, ID3D11DeviceContext * deviceContext)
+RiverQuad::RiverQuad(ID3D11Device * device, ID3D11DeviceContext * deviceContext, float width_, float height_)
 {
+	width = width_;
+	height = height_;
 	initBuffers(device);
 }
 
-ColourRect::~ColourRect()
+RiverQuad::~RiverQuad()
 {
 	// Run parent deconstructor
 	BaseMesh::~BaseMesh();
 }
 
 
-void ColourRect::initBuffers(ID3D11Device * device)
+void RiverQuad::initBuffers(ID3D11Device * device)
 {
 	D3D11_SUBRESOURCE_DATA vertexData, indexData;
 
@@ -24,16 +26,16 @@ void ColourRect::initBuffers(ID3D11Device * device)
 	unsigned long* indices = new unsigned long[indexCount];
 
 	// Load the vertex array with data.
-	vertices[0].position = XMFLOAT3(1.0f, 1.0f, 0.0f);  // Top right.
+	vertices[0].position = XMFLOAT3(1.0f * width, 1.0f * height, 0.0f);  // Top right.
 	vertices[0].colour = XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f);
 
-	vertices[1].position = XMFLOAT3(-1.0f, 1.0f, 0.0f);  // Top left.
+	vertices[1].position = XMFLOAT3(-1.0f * width, 1.0f * height, 0.0f);  // Top left.
 	vertices[1].colour = XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f);
 
-	vertices[2].position = XMFLOAT3(-1.0f, -1.0f, 0.0f);  // bottom left.
+	vertices[2].position = XMFLOAT3(-1.0f * width, -1.0f * height, 0.0f);  // bottom left.
 	vertices[2].colour = XMFLOAT4(0.0f, 0.0f, 1.0f, 1.0f);
 
-	vertices[3].position = XMFLOAT3(+1.0f, -1.0f, 0.0f);  // bottom right.
+	vertices[3].position = XMFLOAT3(+1.0f * width, -1.0f * height, 0.0f);  // bottom right.
 	vertices[3].colour = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
 
 	// Load the index array with data.
@@ -60,7 +62,7 @@ void ColourRect::initBuffers(ID3D11Device * device)
 	indices = 0;
 }
 
-void ColourRect::sendData(ID3D11DeviceContext * deviceContext, D3D_PRIMITIVE_TOPOLOGY top)
+void RiverQuad::sendData(ID3D11DeviceContext * deviceContext, D3D_PRIMITIVE_TOPOLOGY top)
 {
 	unsigned int stride;
 	unsigned int offset;

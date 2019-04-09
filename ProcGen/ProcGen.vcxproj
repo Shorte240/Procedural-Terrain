@@ -126,26 +126,24 @@
   </ItemDefinitionGroup>
   <ItemGroup>
     <ClCompile Include="LSystem.cpp" />
+    <ClCompile Include="RiverQuad.cpp" />
     <ClCompile Include="SimplexNoise.cpp" />
     <ClCompile Include="Terrain.cpp" />
     <ClCompile Include="TerrainShader.cpp" />
     <ClCompile Include="App1.cpp" />
-    <ClCompile Include="ColourRect.cpp" />
     <ClCompile Include="ColourShader.cpp" />
-    <ClCompile Include="ColourTriangle.cpp" />
     <ClCompile Include="Main.cpp" />
     <ClCompile Include="TessellatedPlane.cpp" />
     <ClCompile Include="TessellationShader.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="LSystem.h" />
+    <ClInclude Include="RiverQuad.h" />
     <ClInclude Include="SimplexNoise.h" />
     <ClInclude Include="Terrain.h" />
     <ClInclude Include="TerrainShader.h" />
     <ClInclude Include="App1.h" />
-    <ClInclude Include="ColourRect.h" />
     <ClInclude Include="ColourShader.h" />
-    <ClInclude Include="ColourTriangle.h" />
     <ClInclude Include="resource.h" />
     <ClInclude Include="TessellatedPlane.h" />
     <ClInclude Include="TessellationShader.h" />
