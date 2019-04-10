@@ -1,11 +1,17 @@
 #include "RiverQuad.h"
 
 
-RiverQuad::RiverQuad(ID3D11Device * device, ID3D11DeviceContext * deviceContext, float width_, float height_)
+RiverQuad::RiverQuad(ID3D11Device * device, ID3D11DeviceContext * deviceContext, float width_, float height_, XMFLOAT3 pos_)
 {
 	width = width_;
 	height = height_;
+	lastPos = pos_;
 	initBuffers(device);
+
+	// Pass in pos of last top of quad
+	// Base pos from bottom vertex off of passed in pos
+	/// Decrease width by current point in shape
+	/// Translate by height of next quad
 }
 
 RiverQuad::~RiverQuad()
@@ -26,16 +32,28 @@ void RiverQuad::initBuffers(ID3D11Device * device)
 	unsigned long* indices = new unsigned long[indexCount];
 
 	// Load the vertex array with data.
-	vertices[0].position = XMFLOAT3(1.0f * width, 1.0f * height, 0.0f);  // Top right.
+	//vertices[0].position = XMFLOAT3(1.0f * width, 1.0f * height, 0.0f);  // Top right.
+	//vertices[0].colour = XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f);
+
+	//vertices[1].position = XMFLOAT3(-1.0f * width, 1.0f * height, 0.0f);  // Top left.
+	//vertices[1].colour = XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f);
+
+	//vertices[2].position = XMFLOAT3(-1.0f * width, -1.0f * height, 0.0f);  // bottom left.
+	//vertices[2].colour = XMFLOAT4(0.0f, 0.0f, 1.0f, 1.0f);
+
+	//vertices[3].position = XMFLOAT3(+1.0f * width, -1.0f * height, 0.0f);  // bottom right.
+	//vertices[3].colour = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
+
+	vertices[0].position = XMFLOAT3((1.0f) * width, (1.0f + lastPos.y) * height, lastPos.z);  // Top right.
 	vertices[0].colour = XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f);
 
-	vertices[1].position = XMFLOAT3(-1.0f * width, 1.0f * height, 0.0f);  // Top left.
+	vertices[1].position = XMFLOAT3((-1.0f) * width, (1.0f + lastPos.y) * height, lastPos.z);  // Top left.
 	vertices[1].colour = XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f);
 
-	vertices[2].position = XMFLOAT3(-1.0f * width, -1.0f * height, 0.0f);  // bottom left.
+	vertices[2].position = XMFLOAT3((-1.0f + lastPos.x) * width, (-1.0f + lastPos.y) * height, lastPos.z);  // bottom left.
 	vertices[2].colour = XMFLOAT4(0.0f, 0.0f, 1.0f, 1.0f);
 
-	vertices[3].position = XMFLOAT3(+1.0f * width, -1.0f * height, 0.0f);  // bottom right.
+	vertices[3].position = XMFLOAT3((1.0f + lastPos.x) * width, (-1.0f + lastPos.y) * height, lastPos.z);  // bottom right.
 	vertices[3].colour = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
 
 	// Load the index array with data.
