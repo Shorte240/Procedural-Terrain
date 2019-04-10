@@ -9,6 +9,8 @@
 #include <map>
 #include <stack>
 
+using namespace DirectX;
+
 class LSystem
 {
 public:

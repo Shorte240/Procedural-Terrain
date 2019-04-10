@@ -18,7 +18,7 @@ LSystem::LSystem(ID3D11Device* device, HWND hwnd)
 
 	for (int i = 0; i < 5; i++)
 	{
-		randomRotations[i] = RandomFloatInRange(-1, 1);
+		randomRotations[i] = RandomFloatInRange(-1.0f, 1.0f);
 	}
 
 	rules.insert(std::pair<char, string>('X', "[-FX][+FX]"));
@@ -57,7 +57,7 @@ void LSystem::Generate(ID3D11Device* device, ID3D11DeviceContext* deviceContext,
 			{
 				isLeaf = true;
 				// Translate up along leaf length;
-				float translation = lSystemParams.maxBranchLength;
+				float translation = lSystemParams.maxLeafLength;
 				//float translation = 2.0f * RandomFloatInRange(lSystemParams.minLeafLength, lSystemParams.maxLeafLength);
 				//world_ *= XMMatrixTranslation(0.0f, translation, 0.0f);
 				pos.y += translation;
@@ -66,7 +66,7 @@ void LSystem::Generate(ID3D11Device* device, ID3D11DeviceContext* deviceContext,
 			{
 				isLeaf = false;
 				// Translate up along branch length;
-				float translation = lSystemParams.minLeafLength;
+				float translation = lSystemParams.maxBranchLength;
 				//float translation = 2.0f * RandomFloatInRange(lSystemParams.minBranchLength, lSystemParams.maxBranchLength);
 				//world_ *= XMMatrixTranslation(0.0f, translation, 0.0f);
 				pos.y += translation;
@@ -81,7 +81,7 @@ void LSystem::Generate(ID3D11Device* device, ID3D11DeviceContext* deviceContext,
 		case '+':
 		{
 			// Rotate clockwise in the Z-axis
-			float rotation = lSystemParams.angle;// *(1.0f + variance / 100.0f + randomRotations[i % 5]);
+			float rotation = lSystemParams.angle;// *(1.0f + lSystemParams.variance / 100.0f * randomRotations[i % 5]);
 			//world_ *= XMMatrixRotationRollPitchYaw(0.0f, 0.0f, rotation);
 			rot.z += rotation;
 			break;
@@ -89,7 +89,7 @@ void LSystem::Generate(ID3D11Device* device, ID3D11DeviceContext* deviceContext,
 		case '-':
 		{
 			// Rotate counter-clockwise in the Z-axis
-			float rotation = lSystemParams.angle;// *(1.0f + variance / 100.0f + randomRotations[i % 5]);
+			float rotation = lSystemParams.angle;// *(1.0f + lSystemParams.variance / 100.0f * randomRotations[i % 5]);
 			//world_ *= XMMatrixRotationRollPitchYaw(0.0f, 0.0f, -rotation);
 			rot.z -= rotation;
 			break;
