@@ -17,6 +17,8 @@ public:
 
 	struct SavedTransform
 	{
+		XMFLOAT3 position;
+		float rotation;
 		XMMATRIX world;
 	};
 
