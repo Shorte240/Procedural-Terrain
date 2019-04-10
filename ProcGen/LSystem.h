@@ -49,6 +49,6 @@ private:
 
 	std::string currentPath = "";
 	float randomRotations[5];
-
+	bool isLeaf;
 };
 
