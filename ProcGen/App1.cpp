@@ -352,6 +352,7 @@ void App1::gui()
 			ImGui::InputInt("Iterations", &lSystem->lSystemParams.iterations);
 			ImGui::InputFloat("Angle", &lSystem->lSystemParams.angle);
 			ImGui::InputFloat("Width", &lSystem->lSystemParams.width);
+			ImGui::InputFloat("Height", &lSystem->lSystemParams.height);
 			ImGui::InputFloat("Min Leaf Length", &lSystem->lSystemParams.minLeafLength);
 			ImGui::InputFloat("Max Leaf Length", &lSystem->lSystemParams.maxLeafLength);
 			ImGui::InputFloat("Min Branch Length", &lSystem->lSystemParams.minBranchLength);

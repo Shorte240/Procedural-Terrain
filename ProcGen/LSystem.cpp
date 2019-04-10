@@ -8,7 +8,8 @@ LSystem::LSystem(ID3D11Device* device, HWND hwnd)
 
 	lSystemParams.iterations = 2;
 	lSystemParams.angle = 12.5f;
-	lSystemParams.width = 0.5f;
+	lSystemParams.width = 0.03125f;
+	lSystemParams.height = 0.5f;
 	lSystemParams.minLeafLength = 0.5f;
 	lSystemParams.maxLeafLength = 1.0f;
 	lSystemParams.minBranchLength = 1.0f;
@@ -56,7 +57,8 @@ void LSystem::Generate(ID3D11Device* device, ID3D11DeviceContext* deviceContext,
 			{
 				isLeaf = true;
 				// Translate up along leaf length;
-				float translation = lSystemParams.maxBranchLength;//RandomFloatInRange(lSystemParams.minLeafLength, lSystemParams.maxLeafLength);
+				float translation = lSystemParams.maxBranchLength;
+				//float translation = 2.0f * RandomFloatInRange(lSystemParams.minLeafLength, lSystemParams.maxLeafLength);
 				//world_ *= XMMatrixTranslation(0.0f, translation, 0.0f);
 				pos.y += translation;
 			}
@@ -64,7 +66,8 @@ void LSystem::Generate(ID3D11Device* device, ID3D11DeviceContext* deviceContext,
 			{
 				isLeaf = false;
 				// Translate up along branch length;
-				float translation = lSystemParams.minLeafLength;//RandomFloatInRange(lSystemParams.minBranchLength, lSystemParams.maxBranchLength);
+				float translation = lSystemParams.minLeafLength;
+				//float translation = 2.0f * RandomFloatInRange(lSystemParams.minBranchLength, lSystemParams.maxBranchLength);
 				//world_ *= XMMatrixTranslation(0.0f, translation, 0.0f);
 				pos.y += translation;
 			}
@@ -123,14 +126,14 @@ void LSystem::Generate(ID3D11Device* device, ID3D11DeviceContext* deviceContext,
 			if (currentPath[i - 1] == 'X' || currentPath[i - 2] == 'F' && currentPath[i - 1] == 'X')
 			{
 				isLeaf = true;
-				lSystemParams.width = lSystemParams.minLeafLength;
+				lSystemParams.height = lSystemParams.minLeafLength;
 			}
 			else
 			{
 				isLeaf = false;
-				lSystemParams.width = lSystemParams.minBranchLength;
+				lSystemParams.height = lSystemParams.minBranchLength;
 			}
-			quadVector.push_back(new RiverQuad(device, deviceContext, 0.03125f, lSystemParams.width));
+			quadVector.push_back(new RiverQuad(device, deviceContext, lSystemParams.width, lSystemParams.height));
 			savedTransforms.pop();
 			break;
 

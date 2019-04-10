@@ -27,6 +27,7 @@ public:
 		int iterations;
 		float angle;
 		float width;
+		float height;
 		float minLeafLength;
 		float maxLeafLength;
 		float minBranchLength;
