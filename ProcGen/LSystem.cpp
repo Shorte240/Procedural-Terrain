@@ -34,28 +34,7 @@ void LSystem::Generate(ID3D11Device* device, ID3D11DeviceContext* deviceContext,
 	quadVector.clear();
 	worlds.clear();
 	
-	for (int i = 0; i < lSystemParams.iterations; i++)
-	{
-		string stringBuilder;
-		string currentPathChars = currentPath;
-
-		for (int j = 0; j < currentPathChars.length(); j++)
-		{
-			char s = currentPathChars[j];
-			string n;
-			if (rules.find(currentPath[j]) != rules.end())
-			{
-				n = rules[currentPathChars[j]];
-			}
-			else
-			{
-				n = s;
-			}
-			stringBuilder.append(rules.find(currentPath[j]) != rules.end() ? rules[currentPathChars[j]] : n);
-		}
-
-		currentPath = stringBuilder;
-	}
+	BuildString();
 
 	for (int i = 0; i < currentPath.length(); i++)
 	{
@@ -67,24 +46,18 @@ void LSystem::Generate(ID3D11Device* device, ID3D11DeviceContext* deviceContext,
 			if (currentPath[i + 1] == 'X' || currentPath[i + 3] == 'F' && currentPath[i + 4] == 'X')
 			{
 				isLeaf = true;
-			}
-			else
-			{
-				isLeaf = false;
-			}
-
-			if (isLeaf)
-			{
 				// Translate up along leaf length;
 				float translation = lSystemParams.maxBranchLength;//RandomFloatInRange(lSystemParams.minLeafLength, lSystemParams.maxLeafLength);
 				world_ *= XMMatrixTranslation(0.0f, translation, 0.0f);
 			}
 			else
 			{
+				isLeaf = false;
 				// Translate up along branch length;
 				float translation = lSystemParams.minLeafLength;//RandomFloatInRange(lSystemParams.minBranchLength, lSystemParams.maxBranchLength);
 				world_ *= XMMatrixTranslation(0.0f, translation, 0.0f);
 			}
+
 			break;
 		}
 
@@ -135,17 +108,11 @@ void LSystem::Generate(ID3D11Device* device, ID3D11DeviceContext* deviceContext,
 			if (currentPath[i - 1] == 'X' || currentPath[i - 2] == 'F' && currentPath[i - 1] == 'X')
 			{
 				isLeaf = true;
-			}
-			else
-			{
-				isLeaf = false;
-			}
-			if (isLeaf)
-			{
 				lSystemParams.width = lSystemParams.minLeafLength;
 			}
 			else
 			{
+				isLeaf = false;
 				lSystemParams.width = lSystemParams.minBranchLength;
 			}
 			quadVector.push_back(new RiverQuad(device, deviceContext, 0.03125f, lSystemParams.width));
@@ -174,4 +141,30 @@ float LSystem::RandomFloatInRange(float min, float max)
 	float diff = max - min;
 	float r = random * diff;
 	return min + r;
+}
+
+void LSystem::BuildString()
+{
+	for (int i = 0; i < lSystemParams.iterations; i++)
+	{
+		string stringBuilder;
+		string currentPathChars = currentPath;
+
+		for (int j = 0; j < currentPathChars.length(); j++)
+		{
+			char s = currentPathChars[j];
+			string n;
+			if (rules.find(currentPath[j]) != rules.end())
+			{
+				n = rules[currentPathChars[j]];
+			}
+			else
+			{
+				n = s;
+			}
+			stringBuilder.append(rules.find(currentPath[j]) != rules.end() ? rules[currentPathChars[j]] : n);
+		}
+
+		currentPath = stringBuilder;
+	}
 }

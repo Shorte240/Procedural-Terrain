@@ -42,6 +42,8 @@ public:
 private:
 	ColourShader * colourShader;
 
+	void BuildString();
+
 	const string axiom = "X";
 	std::map<char, string> rules;
 	std::stack<SavedTransform> savedTransforms;
