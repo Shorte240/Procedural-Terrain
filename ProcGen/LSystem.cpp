@@ -52,18 +52,19 @@ void LSystem::Generate(ID3D11Device* device, ID3D11DeviceContext* deviceContext,
 		{
 		case 'F':
 		{
-
+			
 			if (currentPath[i + 1] == 'X' || currentPath[i + 3] == 'F' && currentPath[i + 4] == 'X' || currentPath[i] == 'F' && currentPath[i + 1] == '[')
 			{
-				isLeaf = true;
-				// Translate up along leaf length;
 				float translation = lSystemParams.height;
-				//float translation = 2.0f * RandomFloatInRange(lSystemParams.minLeafLength, lSystemParams.maxLeafLength);
-				//world_ *= XMMatrixTranslation(0.0f, translation, 0.0f);
 				pos.y += translation;
 				world_ *= XMMatrixTranslation(pos.x, pos.y, pos.z);
-				//world_ *= XMMatrixRotationRollPitchYaw(rot.x, rot.y, rot.z);
 				worlds.push_back(world_);
+				XMVECTOR s;
+				XMVECTOR t;
+				XMVECTOR r;
+				XMMatrixDecompose(&s, &r, &t, world_);
+				XMFLOAT3 p;
+				XMStoreFloat3(&p, t);
 				quadVector.push_back(new RiverQuad(device, deviceContext, lSystemParams.width, lSystemParams.height, pos));
 			}
 			//else
@@ -87,16 +88,22 @@ void LSystem::Generate(ID3D11Device* device, ID3D11DeviceContext* deviceContext,
 		{
 			// Rotate clockwise in the Z-axis
 			float rotation = lSystemParams.angle;// *(1.0f + lSystemParams.variance / 100.0f * randomRotations[i % 5]);
-			world_ *= XMMatrixRotationRollPitchYaw(0.0f, 0.0f, rotation);
 			rot.z += rotation;
+			world_ *= XMMatrixTranslation(-pos.x, -pos.y, -pos.z);
+			world_ *= XMMatrixRotationRollPitchYaw(XMConvertToRadians(0.0f), XMConvertToRadians(0.0f), XMConvertToRadians(rot.z));
+			world_ *= XMMatrixTranslation(pos.x, pos.y, pos.z);
+			//world_ *= XMMatrixRotationRollPitchYaw(0.0f, 0.0f, rotation);
 			break;
 		}
 		case '-':
 		{
 			// Rotate counter-clockwise in the Z-axis
 			float rotation = lSystemParams.angle;// *(1.0f + lSystemParams.variance / 100.0f * randomRotations[i % 5]);
-			world_ *= XMMatrixRotationRollPitchYaw(0.0f, 0.0f, -rotation);
 			rot.z -= rotation;
+			world_ *= XMMatrixTranslation(-pos.x, -pos.y, -pos.z);
+			world_ *= XMMatrixRotationRollPitchYaw(XMConvertToRadians(0.0f), XMConvertToRadians(0.0f), XMConvertToRadians(rot.z));
+			world_ *= XMMatrixTranslation(pos.x, pos.y, pos.z);
+			//world_ *= XMMatrixRotationRollPitchYaw(0.0f, 0.0f, -rotation);
 			break;
 		}
 		//case '*':
@@ -116,6 +123,7 @@ void LSystem::Generate(ID3D11Device* device, ID3D11DeviceContext* deviceContext,
 		case '[':
 		{
 			// Save where we are
+			//worlds.push_back(world_);
 			SavedTransform s = { pos, rot.z, world_ };
 			savedTransforms.push(s);
 			break;

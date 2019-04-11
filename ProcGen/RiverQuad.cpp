@@ -44,16 +44,16 @@ void RiverQuad::initBuffers(ID3D11Device * device)
 	//vertices[3].position = XMFLOAT3(+1.0f * width, -1.0f * height, 0.0f);  // bottom right.
 	//vertices[3].colour = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
 
-	vertices[0].position = XMFLOAT3((1.0f) * width, (1.0f + lastPos.y) * height, lastPos.z);  // Top right.
+	vertices[0].position = XMFLOAT3((lastPos.x + width), (lastPos.y + height), lastPos.z);  // Top right.
 	vertices[0].colour = XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f);
 
-	vertices[1].position = XMFLOAT3((-1.0f) * width, (1.0f + lastPos.y) * height, lastPos.z);  // Top left.
+	vertices[1].position = XMFLOAT3((lastPos.x - width), (lastPos.y + height), lastPos.z);  // Top left.
 	vertices[1].colour = XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f);
 
-	vertices[2].position = XMFLOAT3((-1.0f + lastPos.x) * width, (-1.0f + lastPos.y) * height, lastPos.z);  // bottom left.
+	vertices[2].position = XMFLOAT3((lastPos.x - width), (lastPos.y - height), lastPos.z);  // bottom left.
 	vertices[2].colour = XMFLOAT4(0.0f, 0.0f, 1.0f, 1.0f);
 
-	vertices[3].position = XMFLOAT3((1.0f + lastPos.x) * width, (-1.0f + lastPos.y) * height, lastPos.z);  // bottom right.
+	vertices[3].position = XMFLOAT3((lastPos.x + width), (lastPos.y - height), lastPos.z);  // bottom right.
 	vertices[3].colour = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
 
 	// Load the index array with data.
