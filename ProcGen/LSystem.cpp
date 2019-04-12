@@ -56,8 +56,8 @@ void LSystem::Generate(ID3D11Device* device, ID3D11DeviceContext* deviceContext,
 			if (currentPath[i + 1] == 'X' || currentPath[i + 3] == 'F' && currentPath[i + 4] == 'X' || currentPath[i] == 'F' && currentPath[i + 1] == '[')
 			{
 				float translation = lSystemParams.height;
-				pos.y += translation;
 				world_ *= XMMatrixTranslation(pos.x, pos.y, pos.z);
+				pos.y += translation;
 				worlds.push_back(world_);
 				XMVECTOR s;
 				XMVECTOR t;
@@ -65,18 +65,9 @@ void LSystem::Generate(ID3D11Device* device, ID3D11DeviceContext* deviceContext,
 				XMMatrixDecompose(&s, &r, &t, world_);
 				XMFLOAT3 p;
 				XMStoreFloat3(&p, t);
-				quadVector.push_back(new RiverQuad(device, deviceContext, lSystemParams.width, lSystemParams.height, pos));
+				//p.y = pos.y;
+				quadVector.push_back(new RiverQuad(device, deviceContext, lSystemParams.width, lSystemParams.height, p));
 			}
-			//else
-			//{
-			//	isLeaf = false;
-			//	// Translate up along branch length;
-			//	float translation = lSystemParams.maxBranchLength;
-			//	//float translation = 2.0f * RandomFloatInRange(lSystemParams.minBranchLength, lSystemParams.maxBranchLength);
-			//	//world_ *= XMMatrixTranslation(0.0f, translation, 0.0f);
-			//	pos.y += translation;
-			//	quadVector.push_back(new RiverQuad(device, deviceContext, lSystemParams.width, lSystemParams.height, pos));
-			//}
 
 			break;
 		}
@@ -90,7 +81,7 @@ void LSystem::Generate(ID3D11Device* device, ID3D11DeviceContext* deviceContext,
 			float rotation = lSystemParams.angle;// *(1.0f + lSystemParams.variance / 100.0f * randomRotations[i % 5]);
 			rot.z += rotation;
 			world_ *= XMMatrixTranslation(-pos.x, -pos.y, -pos.z);
-			world_ *= XMMatrixRotationRollPitchYaw(XMConvertToRadians(0.0f), XMConvertToRadians(0.0f), XMConvertToRadians(rot.z));
+			world_ *= XMMatrixRotationRollPitchYaw(XMConvertToRadians(0.0f), XMConvertToRadians(0.0f), XMConvertToRadians(rotation));
 			world_ *= XMMatrixTranslation(pos.x, pos.y, pos.z);
 			//world_ *= XMMatrixRotationRollPitchYaw(0.0f, 0.0f, rotation);
 			break;
@@ -106,47 +97,18 @@ void LSystem::Generate(ID3D11Device* device, ID3D11DeviceContext* deviceContext,
 			//world_ *= XMMatrixRotationRollPitchYaw(0.0f, 0.0f, -rotation);
 			break;
 		}
-		//case '*':
-		//{
-		//	// Rotate positively in the Y-axis
-		//	float rotation = 120.f * (1.0f + lSystemParams.variance / 100.f + randomRotations[i % 5]);
-		//	//world_ *= XMMatrixRotationRollPitchYaw(0 * rotation, 1.0f * rotation, 0.0f * rotation);
-		//	break;
-		//}
-		//case '/':
-		//{
-		//	// Rotate negatively in the Y-axis
-		//	float rotation = 120.f * (1.0f + lSystemParams.variance / 100.f + randomRotations[i % 5]);
-		//	//world_ *= XMMatrixRotationRollPitchYaw(0 * rotation, -1.0f * rotation, 0.0f * rotation);
-		//	break;
-		//}
 		case '[':
 		{
 			// Save where we are
-			//worlds.push_back(world_);
 			SavedTransform s = { pos, rot.z, world_ };
 			savedTransforms.push(s);
 			break;
 		}
 		case ']':
 			SavedTransform savedTransform = savedTransforms.top();
-			/*world_ *= XMMatrixTranslation(pos.x, pos.y, pos.z);
-			world_ *= XMMatrixRotationRollPitchYaw(rot.x, rot.y, rot.z);*/
-			//worlds.push_back(world_);
 			world_ = savedTransform.world;
 			pos = savedTransform.position;
 			rot.z = savedTransform.rotation;
-			/*if (currentPath[i - 1] == 'X' || currentPath[i - 2] == 'F' && currentPath[i - 1] == 'X')
-			{
-				isLeaf = true;
-				lSystemParams.height = lSystemParams.minLeafLength;
-			}
-			else
-			{
-				isLeaf = false;
-				lSystemParams.height = lSystemParams.minBranchLength;
-			}*/
-			//quadVector.push_back(new RiverQuad(device, deviceContext, lSystemParams.width, lSystemParams.height, pos));
 			savedTransforms.pop();
 			break;
 

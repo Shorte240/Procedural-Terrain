@@ -1,11 +1,12 @@
 #include "RiverQuad.h"
 
 
-RiverQuad::RiverQuad(ID3D11Device * device, ID3D11DeviceContext * deviceContext, float width_, float height_, XMFLOAT3 pos_)
+RiverQuad::RiverQuad(ID3D11Device * device, ID3D11DeviceContext * deviceContext, float width_, float height_, XMFLOAT3 initialPos_, XMFLOAT3 translatedPos_)
 {
 	width = width_;
 	height = height_;
-	lastPos = pos_;
+	initialPos = initialPos_;
+	translatedPos = translatedPos_;
 	initBuffers(device);
 
 	// Pass in pos of last top of quad
@@ -44,16 +45,16 @@ void RiverQuad::initBuffers(ID3D11Device * device)
 	//vertices[3].position = XMFLOAT3(+1.0f * width, -1.0f * height, 0.0f);  // bottom right.
 	//vertices[3].colour = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
 
-	vertices[0].position = XMFLOAT3((lastPos.x + width), (lastPos.y + height), lastPos.z);  // Top right.
+	vertices[0].position = XMFLOAT3((translatedPos.x + width), (translatedPos.y + height), translatedPos.z);  // Top right.
 	vertices[0].colour = XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f);
 
-	vertices[1].position = XMFLOAT3((lastPos.x - width), (lastPos.y + height), lastPos.z);  // Top left.
+	vertices[1].position = XMFLOAT3((translatedPos.x - width), (translatedPos.y + height), translatedPos.z);  // Top left.
 	vertices[1].colour = XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f);
 
-	vertices[2].position = XMFLOAT3((lastPos.x - width), (lastPos.y - height), lastPos.z);  // bottom left.
+	vertices[2].position = XMFLOAT3((initialPos.x - width), (initialPos.y - height), initialPos.z);  // bottom left.
 	vertices[2].colour = XMFLOAT4(0.0f, 0.0f, 1.0f, 1.0f);
 
-	vertices[3].position = XMFLOAT3((lastPos.x + width), (lastPos.y - height), lastPos.z);  // bottom right.
+	vertices[3].position = XMFLOAT3((initialPos.x + width), (initialPos.y - height), initialPos.z);  // bottom right.
 	vertices[3].colour = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
 
 	// Load the index array with data.
