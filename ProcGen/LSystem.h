@@ -20,7 +20,7 @@ public:
 	struct SavedTransform
 	{
 		XMFLOAT3 position;
-		float rotation;
+		XMFLOAT3 rotation;
 		XMMATRIX world;
 	};
 
@@ -57,5 +57,8 @@ private:
 	std::string currentPath = "";
 	float randomRotations[5];
 	bool isLeaf;
+	XMFLOAT3 initialPos;
+	XMFLOAT3 currentPos;
+	XMFLOAT3 currentRot;
 };
 
