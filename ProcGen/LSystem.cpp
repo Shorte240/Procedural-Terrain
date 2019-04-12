@@ -70,16 +70,18 @@ void LSystem::Generate(ID3D11Device* device, ID3D11DeviceContext* deviceContext,
 
 			// Set initial position to current world position
 			initialPos = currentPos;
-			XMVECTOR Up = { 0.0f, 1.0f, 0.0f };
+			XMVECTOR Up = { 0.0f, 1.0f, 0.0f, 1.0f };
 
 			// Calculate translation vector
 			XMVECTOR translationVector = XMVectorScale(Up, translation);
-			//translationVector.m128_f32[0] = (-1.0f) * r.m128_f32[2];
+			translationVector.m128_f32[0] = (-1.0f) * r.m128_f32[2];
 
 			// Multiply current position by translation vector
 			world_ *= XMMatrixTranslationFromVector(translationVector);
 			XMMatrixDecompose(&s, &r, &t, world_);
 			XMStoreFloat3(&currentPos, t);
+
+			
 
 			// Render quad using initialPos and currentPos
 			quadVector.push_back(new RiverQuad(device, deviceContext, lSystemParams.width, lSystemParams.height, initialPos, currentPos));
@@ -118,7 +120,7 @@ void LSystem::Generate(ID3D11Device* device, ID3D11DeviceContext* deviceContext,
 			XMStoreFloat3(&currentRot, r);
 
 			// Set forward vector
-			XMVECTOR Forward = { 0.0f, 0.0f, 1.0f };
+			XMVECTOR Forward = { 0.0f, 0.0f, 1.0f, 1.0f };
 
 			// Rotate clockwise in the Z-axis
 			float rotation = XMConvertToRadians(lSystemParams.angle);// *(1.0f + lSystemParams.variance / 100.0f * randomRotations[i % 5]);
@@ -130,7 +132,7 @@ void LSystem::Generate(ID3D11Device* device, ID3D11DeviceContext* deviceContext,
 			XMVECTOR negT = XMVectorScale(t, -1.0f);
 
 			// Multiply current rotation by rotation vector
-			world_ *= XMMatrixTranslationFromVector(t) * XMMatrixRotationRollPitchYawFromVector(rotationVector) * XMMatrixTranslationFromVector(negT);
+			world_ *= XMMatrixTranslationFromVector(negT) * XMMatrixRotationRollPitchYawFromVector(rotationVector) * XMMatrixTranslationFromVector(t);
 			XMMatrixDecompose(&s, &r, &t, world_);
 			XMStoreFloat3(&currentRot, r);
 
@@ -153,7 +155,7 @@ void LSystem::Generate(ID3D11Device* device, ID3D11DeviceContext* deviceContext,
 			XMStoreFloat3(&currentRot, r);
 
 			// Set forward vector
-			XMVECTOR Forward = { 0.0f, 0.0f, 1.0f };
+			XMVECTOR Forward = { 0.0f, 0.0f, 1.0f, 1.0f };
 
 			// Rotate clockwise in the Z-axis
 			float rotation = XMConvertToRadians(-lSystemParams.angle);// *(1.0f + lSystemParams.variance / 100.0f * randomRotations[i % 5]);
@@ -165,7 +167,7 @@ void LSystem::Generate(ID3D11Device* device, ID3D11DeviceContext* deviceContext,
 			XMVECTOR negT = XMVectorScale(t, -1.f);
 
 			// Multiply current rotation by rotation vector
-			world_ *= XMMatrixTranslationFromVector(t) * XMMatrixRotationRollPitchYawFromVector(rotationVector) * XMMatrixTranslationFromVector(negT);
+			world_ *= XMMatrixTranslationFromVector(negT) * XMMatrixRotationRollPitchYawFromVector(rotationVector) * XMMatrixTranslationFromVector(t);
 			XMMatrixDecompose(&s, &r, &t, world_);
 			XMStoreFloat3(&currentRot, r);
 			//rot.z -= rotation;

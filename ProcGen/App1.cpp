@@ -24,7 +24,7 @@ void App1::init(HINSTANCE hinstance, HWND hwnd, int screenWidth, int screenHeigh
 	directionalLight = new Light;
 	directionalLight->setAmbientColour(0.1f, 0.1f, 0.1f, 1.0f);
 	directionalLight->setDiffuseColour(0.6f, 0.6f, 0.6f, 1.0f);
-	directionalLight->setDirection(-1.0f, -0.7f, 0.0f);
+	directionalLight->setDirection(0.5f, -0.5f, 0.0f);
 
 	displacementHeight = 1.0f;
 	bottomLeft = 25;
