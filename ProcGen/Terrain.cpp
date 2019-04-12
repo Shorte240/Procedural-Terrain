@@ -844,131 +844,157 @@ void Terrain::Pick(ID3D11Device * device, XMVECTOR pickRayInWorldSpacePos, XMVEC
 
 void Terrain::CalculateNormals()
 {
-	int i, j, index1, index2, index3, index, count;
-	float vertex1[3], vertex2[3], vertex3[3], vector1[3], vector2[3], sum[3], length;
-	XMFLOAT3* normals;
+	//int i, j, index1, index2, index3, index, count;
+	//float vertex1[3], vertex2[3], vertex3[3], vector1[3], vector2[3], sum[3], length;
+	//XMFLOAT3* normals;
 
-	// Create a temporary array to hold the un-normalized normal vectors.
-	normals = new XMFLOAT3[(height - 1) * (width - 1)];
+	//// Create a temporary array to hold the un-normalized normal vectors.
+	//normals = new XMFLOAT3[(height - 1) * (width - 1)];
 
-	// Go through all the faces in the mesh and calculate their normals.
-	for (j = 0; j<(height - 1); j++)
+	//// Go through all the faces in the mesh and calculate their normals.
+	//for (j = 0; j<(height - 1); j++)
+	//{
+	//	for (i = 0; i<(width - 1); i++)
+	//	{
+	//		index1 = (j * height) + i;
+	//		index2 = (j * height) + (i + 1);
+	//		index3 = ((j + 1) * height) + i;
+
+	//		// Get three vertices from the face.
+	//		vertex1[0] = vertices[index1].position.x;
+	//		vertex1[1] = vertices[index1].position.y;
+	//		vertex1[2] = vertices[index1].position.z;
+
+	//		vertex2[0] = vertices[index2].position.x;
+	//		vertex2[1] = vertices[index2].position.y;
+	//		vertex2[2] = vertices[index2].position.z;
+
+	//		vertex3[0] = vertices[index3].position.x;
+	//		vertex3[1] = vertices[index3].position.y;
+	//		vertex3[2] = vertices[index3].position.z;
+
+	//		// Calculate the two vectors for this face.
+	//		vector1[0] = vertex1[0] - vertex3[0];
+	//		vector1[1] = vertex1[1] - vertex3[1];
+	//		vector1[2] = vertex1[2] - vertex3[2];
+	//		vector2[0] = vertex3[0] - vertex2[0];
+	//		vector2[1] = vertex3[1] - vertex2[1];
+	//		vector2[2] = vertex3[2] - vertex2[2];
+
+	//		index = (j * (height - 1)) + i;
+
+	//		// Calculate the cross product of those two vectors to get the un-normalized value for this face normal.
+	//		normals[index].x = (vector1[1] * vector2[2]) - (vector1[2] * vector2[1]);
+	//		normals[index].y = (vector1[2] * vector2[0]) - (vector1[0] * vector2[2]);
+	//		normals[index].z = (vector1[0] * vector2[1]) - (vector1[1] * vector2[0]);
+	//	}
+	//}
+
+	//// Now go through all the vertices and take an average of each face normal 	
+	//// that the vertex touches to get the averaged normal for that vertex.
+	//for (j = 0; j<height; j++)
+	//{
+	//	for (i = 0; i<width; i++)
+	//	{
+	//		// Initialize the sum.
+	//		sum[0] = 0.0f;
+	//		sum[1] = 0.0f;
+	//		sum[2] = 0.0f;
+
+	//		// Initialize the count.
+	//		count = 0;
+
+	//		// Bottom left face.
+	//		if (((i - 1) >= 0) && ((j - 1) >= 0))
+	//		{
+	//			index = ((j - 1) * (height - 1)) + (i - 1);
+
+	//			sum[0] += normals[index].x;
+	//			sum[1] += normals[index].y;
+	//			sum[2] += normals[index].z;
+	//			count++;
+	//		}
+
+	//		// Bottom right face.
+	//		if ((i < (width - 1)) && ((j - 1) >= 0))
+	//		{
+	//			index = ((j - 1) * (height - 1)) + i;
+
+	//			sum[0] += normals[index].x;
+	//			sum[1] += normals[index].y;
+	//			sum[2] += normals[index].z;
+	//			count++;
+	//		}
+
+	//		// Upper left face.
+	//		if (((i - 1) >= 0) && (j < (height - 1)))
+	//		{
+	//			index = (j * (height - 1)) + (i - 1);
+
+	//			sum[0] += normals[index].x;
+	//			sum[1] += normals[index].y;
+	//			sum[2] += normals[index].z;
+	//			count++;
+	//		}
+
+	//		// Upper right face.
+	//		if ((i < (width - 1)) && (j < (height - 1)))
+	//		{
+	//			index = (j * (height - 1)) + i;
+
+	//			sum[0] += normals[index].x;
+	//			sum[1] += normals[index].y;
+	//			sum[2] += normals[index].z;
+	//			count++;
+	//		}
+
+	//		// Take the average of the faces touching this vertex.
+	//		sum[0] = (sum[0] / (float)count);
+	//		sum[1] = (sum[1] / (float)count);
+	//		sum[2] = (sum[2] / (float)count);
+
+	//		// Calculate the length of this normal.
+	//		length = sqrt((sum[0] * sum[0]) + (sum[1] * sum[1]) + (sum[2] * sum[2]));
+
+	//		// Get an index to the vertex location in the height map array.
+	//		index = (j * height) + i;
+
+	//		// Normalize the final shared normal for this vertex and store it in the height map array.
+	//		vertices[index].normal.x = (-1) * (sum[0] / length);
+	//		vertices[index].normal.y = (-1) * (sum[1] / length);
+	//		vertices[index].normal.z = (-1) * (sum[2] / length);
+	//	}
+	//}
+
+	//// Release the temporary normals.
+	//delete[] normals;
+	//normals = 0;
+
+	for (int y = 1; y < height; y++) 
 	{
-		for (i = 0; i<(width - 1); i++)
+		for (int x = 1; x < width; x++) 
 		{
-			index1 = (j * height) + i;
-			index2 = (j * height) + (i + 1);
-			index3 = ((j + 1) * height) + i;
+			int vertexIdentity = ((height + 1) * y) + x;
+			int vertexIdentityAbove = ((height + 1) * (y + 1)) + x;
+			int vertexIdentityBelow = ((height + 1) * (y - 1)) + x;
 
-			// Get three vertices from the face.
-			vertex1[0] = vertices[index1].position.x;
-			vertex1[1] = vertices[index1].position.y;
-			vertex1[2] = vertices[index1].position.z;
+			XMVECTOR A = XMLoadFloat3(&vertices[vertexIdentity + 1].position);
 
-			vertex2[0] = vertices[index2].position.x;
-			vertex2[1] = vertices[index2].position.y;
-			vertex2[2] = vertices[index2].position.z;
+			XMVECTOR B = XMLoadFloat3(&vertices[vertexIdentity - 1].position);
 
-			vertex3[0] = vertices[index3].position.x;
-			vertex3[1] = vertices[index3].position.y;
-			vertex3[2] = vertices[index3].position.z;
+			XMVECTOR AB = XMVector3Normalize(B - A);
 
-			// Calculate the two vectors for this face.
-			vector1[0] = vertex1[0] - vertex3[0];
-			vector1[1] = vertex1[1] - vertex3[1];
-			vector1[2] = vertex1[2] - vertex3[2];
-			vector2[0] = vertex3[0] - vertex2[0];
-			vector2[1] = vertex3[1] - vertex2[1];
-			vector2[2] = vertex3[2] - vertex2[2];
+			XMVECTOR C = XMLoadFloat3(&vertices[vertexIdentityAbove].position);
 
-			index = (j * (height - 1)) + i;
+			XMVECTOR D = XMLoadFloat3(&vertices[vertexIdentityBelow].position);
 
-			// Calculate the cross product of those two vectors to get the un-normalized value for this face normal.
-			normals[index].x = (vector1[1] * vector2[2]) - (vector1[2] * vector2[1]);
-			normals[index].y = (vector1[2] * vector2[0]) - (vector1[0] * vector2[2]);
-			normals[index].z = (vector1[0] * vector2[1]) - (vector1[1] * vector2[0]);
+			XMVECTOR CD = XMVector3Normalize(D - C);
+
+			XMVECTOR vertexNormal = XMVector3Normalize(XMVector3Cross(AB, CD));
+
+			XMStoreFloat3(&vertices[vertexIdentity].normal, vertexNormal);
 		}
 	}
-
-	// Now go through all the vertices and take an average of each face normal 	
-	// that the vertex touches to get the averaged normal for that vertex.
-	for (j = 0; j<height; j++)
-	{
-		for (i = 0; i<width; i++)
-		{
-			// Initialize the sum.
-			sum[0] = 0.0f;
-			sum[1] = 0.0f;
-			sum[2] = 0.0f;
-
-			// Initialize the count.
-			count = 0;
-
-			// Bottom left face.
-			if (((i - 1) >= 0) && ((j - 1) >= 0))
-			{
-				index = ((j - 1) * (height - 1)) + (i - 1);
-
-				sum[0] += normals[index].x;
-				sum[1] += normals[index].y;
-				sum[2] += normals[index].z;
-				count++;
-			}
-
-			// Bottom right face.
-			if ((i < (width - 1)) && ((j - 1) >= 0))
-			{
-				index = ((j - 1) * (height - 1)) + i;
-
-				sum[0] += normals[index].x;
-				sum[1] += normals[index].y;
-				sum[2] += normals[index].z;
-				count++;
-			}
-
-			// Upper left face.
-			if (((i - 1) >= 0) && (j < (height - 1)))
-			{
-				index = (j * (height - 1)) + (i - 1);
-
-				sum[0] += normals[index].x;
-				sum[1] += normals[index].y;
-				sum[2] += normals[index].z;
-				count++;
-			}
-
-			// Upper right face.
-			if ((i < (width - 1)) && (j < (height - 1)))
-			{
-				index = (j * (height - 1)) + i;
-
-				sum[0] += normals[index].x;
-				sum[1] += normals[index].y;
-				sum[2] += normals[index].z;
-				count++;
-			}
-
-			// Take the average of the faces touching this vertex.
-			sum[0] = (sum[0] / (float)count);
-			sum[1] = (sum[1] / (float)count);
-			sum[2] = (sum[2] / (float)count);
-
-			// Calculate the length of this normal.
-			length = sqrt((sum[0] * sum[0]) + (sum[1] * sum[1]) + (sum[2] * sum[2]));
-
-			// Get an index to the vertex location in the height map array.
-			index = (j * height) + i;
-
-			// Normalize the final shared normal for this vertex and store it in the height map array.
-			vertices[index].normal.x = (-1) * (sum[0] / length);
-			vertices[index].normal.y = (-1) * (sum[1] / length);
-			vertices[index].normal.z = (-1) * (sum[2] / length);
-		}
-	}
-
-	// Release the temporary normals.
-	delete[] normals;
-	normals = 0;
 }
 
 float Terrain::RandomIntRange(int min, int max)
