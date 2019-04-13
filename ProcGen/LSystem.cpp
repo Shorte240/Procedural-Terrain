@@ -57,7 +57,7 @@ void LSystem::Generate(ID3D11Device* device, ID3D11DeviceContext* deviceContext,
 			// Draw/Push back new quad using initialPos, translatedPos
 
 			// Translation amount
-			float translation = lSystemParams.height;
+			float translation = 2.0f * lSystemParams.height;
 
 			// Get current world position
 			XMVECTOR s;

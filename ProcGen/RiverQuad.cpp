@@ -33,16 +33,16 @@ void RiverQuad::initBuffers(ID3D11Device * device)
 	unsigned long* indices = new unsigned long[indexCount];
 
 	// Load the vertex array with data.
-	vertices[0].position = XMFLOAT3(0.0f + width, height, 0.0f);  // Top right.
+	vertices[0].position = XMFLOAT3(width, height, 0.0f);  // Top right.
 	vertices[0].colour = XMFLOAT4(1.0f, 0.0f, 0.0f, 1.0f);
 
-	vertices[1].position = XMFLOAT3(0.0f, height, 0.0f);  // Top left.
+	vertices[1].position = XMFLOAT3(-width, height, 0.0f);  // Top left.
 	vertices[1].colour = XMFLOAT4(0.0f, 1.0f, 0.0f, 1.0f);
 
-	vertices[2].position = XMFLOAT3(0.0f, 0.0f, 0.0f);  // bottom left.
+	vertices[2].position = XMFLOAT3(-width, 0.0f, 0.0f);  // bottom left.
 	vertices[2].colour = XMFLOAT4(0.0f, 0.0f, 1.0f, 1.0f);
 
-	vertices[3].position = XMFLOAT3(0.0f + width, 0.0f, 0.0f);  // bottom right.
+	vertices[3].position = XMFLOAT3(width, 0.0f, 0.0f);  // bottom right.
 	vertices[3].colour = XMFLOAT4(1.0f, 1.0f, 1.0f, 1.0f);
 
 
