@@ -5,6 +5,7 @@
 #include <d3d11.h>
 #include "DXF.h"
 #include "ColourShader.h"
+#include "ManipulationShader.h"
 #include "RiverQuad.h"
 #include <map>
 #include <stack>
@@ -37,14 +38,25 @@ public:
 		float variance;
 	};
 
+	struct WaveVariables
+	{
+		float elapsedTime;
+		float height;
+		float frequency;
+		float speed;
+	};
+
 	void Generate(ID3D11Device* device, ID3D11DeviceContext* deviceContext, XMMATRIX& world, XMMATRIX& view, XMMATRIX& proj, XMFLOAT3 positionOffset_);
-	void Render(ID3D11DeviceContext* deviceContext, XMMATRIX view, XMMATRIX proj);
+	void Render(ID3D11DeviceContext* deviceContext, XMMATRIX view, XMMATRIX proj, ID3D11ShaderResourceView* waterTexture, Light* light);
 	void ClearSystem();
 
 	LSystemParameters lSystemParams;
+	
+	WaveVariables waveParams;
 
 private:
 	ColourShader * colourShader;
+	ManipulationShader* manipulationShader;
 
 	void BuildString();
 	float RandomFloatInRange(float min, float max);

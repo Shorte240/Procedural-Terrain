@@ -34,6 +34,9 @@
     <Filter Include="Resource Files\Terrain">
       <UniqueIdentifier>{748dded9-2b0e-4351-be57-fbb5d664ef77}</UniqueIdentifier>
     </Filter>
+    <Filter Include="Resource Files\Manipulation">
+      <UniqueIdentifier>{b2af53db-4330-4cd7-a4f7-a55db0f784ba}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="App1.cpp">
@@ -65,6 +68,9 @@
     </ClCompile>
     <ClCompile Include="RiverQuad.cpp">
       <Filter>Source Files\Meshes</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\..\Frr%27s Stuff\AG0701a\Procedural-Terrain\ProcGen\ManipulationShader.cpp">
+      <Filter>Source Files\Shaders</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -98,6 +104,9 @@
     <ClInclude Include="RiverQuad.h">
       <Filter>Header Files\Meshes</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\..\Frr%27s Stuff\AG0701a\Procedural-Terrain\ProcGen\ManipulationShader.h">
+      <Filter>Header Files\Shaders</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="tessellation_ds.hlsl">
@@ -126,6 +135,12 @@
     </FxCompile>
     <FxCompile Include="terrain_ps.hlsl">
       <Filter>Resource Files\Terrain</Filter>
+    </FxCompile>
+    <FxCompile Include="..\..\..\..\Frr%27s Stuff\AG0701a\Procedural-Terrain\ProcGen\manipulation_ps.hlsl">
+      <Filter>Resource Files\Manipulation</Filter>
+    </FxCompile>
+    <FxCompile Include="..\..\..\..\Frr%27s Stuff\AG0701a\Procedural-Terrain\ProcGen\manipulation_vs.hlsl">
+      <Filter>Resource Files\Manipulation</Filter>
     </FxCompile>
   </ItemGroup>
 </Project>

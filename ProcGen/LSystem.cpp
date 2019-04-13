@@ -5,6 +5,7 @@
 LSystem::LSystem(ID3D11Device* device, HWND hwnd)
 {
 	colourShader = new ColourShader(device, hwnd);
+	manipulationShader = new ManipulationShader(device, hwnd);
 
 	lSystemParams.iterations = 2;
 	lSystemParams.angle = 45.0f;
@@ -15,6 +16,11 @@ LSystem::LSystem(ID3D11Device* device, HWND hwnd)
 	lSystemParams.minBranchLength = 1.0f;
 	lSystemParams.maxBranchLength = 2.0f;
 	lSystemParams.variance = 2.0f;
+
+	waveParams.elapsedTime = 0.0f;
+	waveParams.height = 1.0f;
+	waveParams.frequency = 1.0f;
+	waveParams.speed = 1.0f;
 
 	rules.insert(std::pair<char, string>('X', "[-FX][+FX]"));
 	rules.insert(std::pair<char, string>('F', "FF"));
@@ -162,11 +168,13 @@ void LSystem::Generate(ID3D11Device* device, ID3D11DeviceContext* deviceContext,
 	}
 }
 
-void LSystem::Render(ID3D11DeviceContext* deviceContext, XMMATRIX view, XMMATRIX proj)
+void LSystem::Render(ID3D11DeviceContext* deviceContext, XMMATRIX view, XMMATRIX proj, ID3D11ShaderResourceView* waterTexture, Light* light)
 {
 	for (int i = 0; i < quadVector.size(); i++)
 	{
 		quadVector[i]->sendData(deviceContext);
+		/*manipulationShader->setShaderParameters(deviceContext, worlds[i], view, proj, waterTexture, light, XMFLOAT4(waveParams.elapsedTime, waveParams.height, waveParams.frequency, waveParams.speed));
+		manipulationShader->render(deviceContext, quadVector[i]->getIndexCount());*/
 		colourShader->setShaderParameters(deviceContext, worlds[i], view, proj);
 		colourShader->render(deviceContext, quadVector[i]->getIndexCount());
 	}

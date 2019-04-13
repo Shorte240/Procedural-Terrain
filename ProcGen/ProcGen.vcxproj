@@ -125,6 +125,7 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\..\..\Frr%27s Stuff\AG0701a\Procedural-Terrain\ProcGen\ManipulationShader.cpp" />
     <ClCompile Include="LSystem.cpp" />
     <ClCompile Include="RiverQuad.cpp" />
     <ClCompile Include="SimplexNoise.cpp" />
@@ -137,6 +138,7 @@
     <ClCompile Include="TessellationShader.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\..\..\Frr%27s Stuff\AG0701a\Procedural-Terrain\ProcGen\ManipulationShader.h" />
     <ClInclude Include="LSystem.h" />
     <ClInclude Include="RiverQuad.h" />
     <ClInclude Include="SimplexNoise.h" />
@@ -149,6 +151,18 @@
     <ClInclude Include="TessellationShader.h" />
   </ItemGroup>
   <ItemGroup>
+    <FxCompile Include="..\..\..\..\Frr%27s Stuff\AG0701a\Procedural-Terrain\ProcGen\manipulation_ps.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+    </FxCompile>
+    <FxCompile Include="..\..\..\..\Frr%27s Stuff\AG0701a\Procedural-Terrain\ProcGen\manipulation_vs.hlsl">
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
+    </FxCompile>
     <FxCompile Include="terrain_ps.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>

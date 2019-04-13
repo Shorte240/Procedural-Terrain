@@ -207,7 +207,7 @@ bool App1::render()
 	//worldMatrix *= XMMatrixRotationRollPitchYaw(3.14/2, 0.0f, 0.0f);
 	//worldMatrix *= XMMatrixTranslation(mwP.x, 1.0f, mwP.z);
 
-	lSystem->Render(renderer->getDeviceContext(), viewMatrix, projectionMatrix);
+	lSystem->Render(renderer->getDeviceContext(), viewMatrix, projectionMatrix, textureMgr->getTexture("Rock"), directionalLight);
 
 	// Render GUI
 	gui();
@@ -359,6 +359,15 @@ void App1::gui()
 			ImGui::InputFloat("Min Branch Length", &lSystem->lSystemParams.minBranchLength);
 			ImGui::InputFloat("Max Branch Length", &lSystem->lSystemParams.maxBranchLength);
 			ImGui::InputFloat("Variance", &lSystem->lSystemParams.variance);
+			ImGui::TreePop();
+		}
+
+		if (ImGui::TreeNode("Wave Variables"))
+		{
+			lSystem->waveParams.elapsedTime += timer->getTime();
+			ImGui::SliderFloat("Wave Height", &lSystem->waveParams.height, 0, 20);
+			ImGui::SliderFloat("Wave Frequency", &lSystem->waveParams.frequency, 0, 15);
+			ImGui::SliderFloat("Wave Speed", &lSystem->waveParams.speed, 0, 5);
 			ImGui::TreePop();
 		}
 
