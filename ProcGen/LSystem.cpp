@@ -7,7 +7,8 @@ LSystem::LSystem(ID3D11Device* device, HWND hwnd)
 	colourShader = new ColourShader(device, hwnd);
 
 	lSystemParams.iterations = 2;
-	lSystemParams.angle = 12.5f;
+	//lSystemParams.angle = 12.5f;
+	lSystemParams.angle = 45.0f;
 	lSystemParams.width = 0.03125f;
 	lSystemParams.height = 0.5f;
 	lSystemParams.minLeafLength = 0.5f;
@@ -63,10 +64,9 @@ void LSystem::Generate(ID3D11Device* device, ID3D11DeviceContext* deviceContext,
 			XMVECTOR t;
 			XMVECTOR r;
 			XMMatrixDecompose(&s, &r, &t, world_);
-			XMStoreFloat3(&currentPos, t);
+			//XMStoreFloat3(&currentPos, t);
 
-			// Push back the world matrix to be used when rendering the quad
-			//worlds.push_back(world_);
+			
 
 			// Set initial position to current world position
 			initialPos = currentPos;
@@ -74,33 +74,21 @@ void LSystem::Generate(ID3D11Device* device, ID3D11DeviceContext* deviceContext,
 
 			// Calculate translation vector
 			XMVECTOR translationVector = XMVectorScale(Up, translation);
-			translationVector.m128_f32[0] = (-1.0f) * r.m128_f32[2];
+			//translationVector = XMVectorSet(translationVector.m128_f32[0], translationVector.m128_f32[1], translationVector.m128_f32[2], 1.0f);
+			//translationVector = XMVectorMultiply(translationVector, r);
+			//translationVector.m128_f32[0] = (-1.0f) * r.m128_f32[2];
 
 			// Multiply current position by translation vector
-			world_ *= XMMatrixTranslationFromVector(translationVector);
+			XMMATRIX translationMatrix = XMMatrixTranslationFromVector(translationVector);
+			world_ = XMMatrixMultiply(translationMatrix, world_);
 			XMMatrixDecompose(&s, &r, &t, world_);
 			XMStoreFloat3(&currentPos, t);
 
-			
+			// Push back the world matrix to be used when rendering the quad
+			worlds.push_back(world_);
 
 			// Render quad using initialPos and currentPos
 			quadVector.push_back(new RiverQuad(device, deviceContext, lSystemParams.width, lSystemParams.height, initialPos, currentPos));
-
-			//if (currentPath[i + 1] == 'X' || currentPath[i + 3] == 'F' && currentPath[i + 4] == 'X' || currentPath[i] == 'F' && currentPath[i + 1] == '[')
-			//{
-			//	float translation = lSystemParams.height;
-			//	world_ *= XMMatrixTranslation(pos.x, pos.y, pos.z);
-			//	pos.y += translation;
-			//	worlds.push_back(world_);
-			//	XMVECTOR s;
-			//	XMVECTOR t;
-			//	XMVECTOR r;
-			//	XMMatrixDecompose(&s, &r, &t, world_);
-			//	XMFLOAT3 p;
-			//	XMStoreFloat3(&p, t);
-			//	//p.y = pos.y;
-			//	quadVector.push_back(new RiverQuad(device, deviceContext, lSystemParams.width, lSystemParams.height, pos, p));
-			//}
 
 			break;
 		}
@@ -117,7 +105,7 @@ void LSystem::Generate(ID3D11Device* device, ID3D11DeviceContext* deviceContext,
 			XMVECTOR t;
 			XMVECTOR r;
 			XMMatrixDecompose(&s, &r, &t, world_);
-			XMStoreFloat3(&currentRot, r);
+			//XMStoreFloat3(&currentRot, r);
 
 			// Set forward vector
 			XMVECTOR Forward = { 0.0f, 0.0f, 1.0f, 1.0f };
@@ -128,19 +116,13 @@ void LSystem::Generate(ID3D11Device* device, ID3D11DeviceContext* deviceContext,
 			// Calculate rotation vector
 			XMVECTOR rotationVector = XMVectorScale(Forward, rotation);
 
-			// Inverse translation
-			XMVECTOR negT = XMVectorScale(t, -1.0f);
-
 			// Multiply current rotation by rotation vector
-			world_ *= XMMatrixTranslationFromVector(negT) * XMMatrixRotationRollPitchYawFromVector(rotationVector) * XMMatrixTranslationFromVector(t);
+			//XMMATRIX rotationMatrix = (XMMatrixTranslationFromVector(-t) * XMMatrixRotationRollPitchYawFromVector(rotationVector) * XMMatrixTranslationFromVector(t));
+			XMMATRIX rotationMatrix = XMMatrixRotationRollPitchYawFromVector(rotationVector);
+			world_ = XMMatrixMultiply(rotationMatrix, world_);
 			XMMatrixDecompose(&s, &r, &t, world_);
 			XMStoreFloat3(&currentRot, r);
 
-			//rot.z += rotation;
-			/*world_ *= XMMatrixTranslation(-pos.x, -pos.y, -pos.z);
-			world_ *= XMMatrixRotationRollPitchYaw(XMConvertToRadians(0.0f), XMConvertToRadians(0.0f), XMConvertToRadians(rotation));
-			world_ *= XMMatrixTranslation(pos.x, pos.y, pos.z);*/
-			//world_ *= XMMatrixRotationRollPitchYaw(0.0f, 0.0f, rotation);
 			break;
 		}
 		case '-':
@@ -152,10 +134,10 @@ void LSystem::Generate(ID3D11Device* device, ID3D11DeviceContext* deviceContext,
 			XMVECTOR t;
 			XMVECTOR r;
 			XMMatrixDecompose(&s, &r, &t, world_);
-			XMStoreFloat3(&currentRot, r);
+			//XMStoreFloat3(&currentRot, r);
 
 			// Set forward vector
-			XMVECTOR Forward = { 0.0f, 0.0f, 1.0f, 1.0f };
+			XMVECTOR Forward = { 0.0f, 0.0f, 1.0f, 1.0f};
 
 			// Rotate clockwise in the Z-axis
 			float rotation = XMConvertToRadians(-lSystemParams.angle);// *(1.0f + lSystemParams.variance / 100.0f * randomRotations[i % 5]);
@@ -163,18 +145,13 @@ void LSystem::Generate(ID3D11Device* device, ID3D11DeviceContext* deviceContext,
 			// Calculate rotation vector
 			XMVECTOR rotationVector = XMVectorScale(Forward, rotation);
 
-			// Inverse translation
-			XMVECTOR negT = XMVectorScale(t, -1.f);
-
 			// Multiply current rotation by rotation vector
-			world_ *= XMMatrixTranslationFromVector(negT) * XMMatrixRotationRollPitchYawFromVector(rotationVector) * XMMatrixTranslationFromVector(t);
+			//XMMATRIX rotationMatrix = (XMMatrixTranslationFromVector(-t) * XMMatrixRotationRollPitchYawFromVector(rotationVector) * XMMatrixTranslationFromVector(t));
+			XMMATRIX rotationMatrix = XMMatrixRotationRollPitchYawFromVector(rotationVector);
+			world_ = XMMatrixMultiply(rotationMatrix, world_);
 			XMMatrixDecompose(&s, &r, &t, world_);
 			XMStoreFloat3(&currentRot, r);
-			//rot.z -= rotation;
-			/*world_ *= XMMatrixTranslation(-pos.x, -pos.y, -pos.z);
-			world_ *= XMMatrixRotationRollPitchYaw(XMConvertToRadians(0.0f), XMConvertToRadians(0.0f), XMConvertToRadians(-rotation));
-			world_ *= XMMatrixTranslation(pos.x, pos.y, pos.z);*/
-			//world_ *= XMMatrixRotationRollPitchYaw(0.0f, 0.0f, -rotation);
+
 			break;
 		}
 		case '[':
@@ -200,11 +177,11 @@ void LSystem::Generate(ID3D11Device* device, ID3D11DeviceContext* deviceContext,
 
 void LSystem::Render(ID3D11DeviceContext* deviceContext, XMMATRIX view, XMMATRIX proj)
 {
-	XMMATRIX wor = XMMatrixIdentity();
+	/*XMMATRIX wor = XMMatrixIdentity();
 	for (int i = 0; i < quadVector.size(); i++)
 	{
 		worlds.push_back(wor);
-	}
+	}*/
 	for (int i = 0; i < quadVector.size(); i++)
 	{
 		quadVector[i]->sendData(deviceContext);
