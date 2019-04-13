@@ -193,6 +193,14 @@ void LSystem::Render(ID3D11DeviceContext* deviceContext, XMMATRIX view, XMMATRIX
 	}
 }
 
+void LSystem::ClearSystem()
+{
+	// Clear all data storing vectors
+	// To remove the L-System from the world
+	quadVector.clear();
+	worlds.clear();
+}
+
 float LSystem::RandomFloatInRange(float min, float max)
 {
 	float random = ((float)rand()) / (float)RAND_MAX;

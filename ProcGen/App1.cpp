@@ -371,6 +371,11 @@ void App1::gui()
 			lSystem->Generate(renderer->getDevice(), renderer->getDeviceContext(), worldMatrix, viewMatrix, projectionMatrix, XMFLOAT3(riverSystemPosition[0], riverSystemPosition[1], riverSystemPosition[2]));
 		}
 
+		if (ImGui::Button("Clear System"))
+		{
+			lSystem->ClearSystem();
+		}
+
 		ImGui::TreePop();
 	}
 	

@@ -39,8 +39,7 @@ public:
 
 	void Generate(ID3D11Device* device, ID3D11DeviceContext* deviceContext, XMMATRIX& world, XMMATRIX& view, XMMATRIX& proj, XMFLOAT3 positionOffset_);
 	void Render(ID3D11DeviceContext* deviceContext, XMMATRIX view, XMMATRIX proj);
-	float RandomFloatInRange(float min, float max);
-	std::vector<RiverQuad*> quadVector;
+	void ClearSystem();
 
 	LSystemParameters lSystemParams;
 
@@ -48,6 +47,9 @@ private:
 	ColourShader * colourShader;
 
 	void BuildString();
+	float RandomFloatInRange(float min, float max);
+	
+	std::vector<RiverQuad*> quadVector;
 
 	const string axiom = "X";
 	std::map<char, string> rules;
