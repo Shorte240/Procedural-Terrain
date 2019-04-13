@@ -66,7 +66,8 @@ void LSystem::Generate(ID3D11Device* device, ID3D11DeviceContext* deviceContext,
 			XMMatrixDecompose(&s, &r, &t, world_);
 			//XMStoreFloat3(&currentPos, t);
 
-			
+			// Push back the world matrix to be used when rendering the quad
+			worlds.push_back(world_);
 
 			// Set initial position to current world position
 			initialPos = currentPos;
@@ -84,8 +85,7 @@ void LSystem::Generate(ID3D11Device* device, ID3D11DeviceContext* deviceContext,
 			XMMatrixDecompose(&s, &r, &t, world_);
 			XMStoreFloat3(&currentPos, t);
 
-			// Push back the world matrix to be used when rendering the quad
-			worlds.push_back(world_);
+			
 
 			// Render quad using initialPos and currentPos
 			quadVector.push_back(new RiverQuad(device, deviceContext, lSystemParams.width, lSystemParams.height, initialPos, currentPos));
