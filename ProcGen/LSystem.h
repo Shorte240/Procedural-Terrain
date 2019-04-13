@@ -57,8 +57,6 @@ private:
 	std::vector<XMMATRIX> worlds;
 
 	std::string currentPath = "";
-	float randomRotations[5];
-	bool isLeaf;
 	XMFLOAT3 initialPos;
 	XMFLOAT3 currentPos;
 	XMFLOAT3 currentRot;
