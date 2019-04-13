@@ -349,6 +349,7 @@ void App1::gui()
 	{
 		if (ImGui::TreeNode("Variables"))
 		{
+			ImGui::InputFloat3("Position", riverSystemPosition);
 			ImGui::InputInt("Iterations", &lSystem->lSystemParams.iterations);
 			ImGui::InputFloat("Angle", &lSystem->lSystemParams.angle);
 			ImGui::InputFloat("Width", &lSystem->lSystemParams.width);
@@ -367,7 +368,7 @@ void App1::gui()
 			worldMatrix = renderer->getWorldMatrix();
 			viewMatrix = camera->getViewMatrix();
 			projectionMatrix = renderer->getProjectionMatrix();
-			lSystem->Generate(renderer->getDevice(), renderer->getDeviceContext(), worldMatrix, viewMatrix, projectionMatrix);
+			lSystem->Generate(renderer->getDevice(), renderer->getDeviceContext(), worldMatrix, viewMatrix, projectionMatrix, XMFLOAT3(riverSystemPosition[0], riverSystemPosition[1], riverSystemPosition[2]));
 		}
 
 		ImGui::TreePop();

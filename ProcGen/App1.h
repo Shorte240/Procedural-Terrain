@@ -46,6 +46,7 @@ private:
 	bool currentCornerValues, setCornerValues, randomCornerValues;
 
 	XMFLOAT3 mwP;
+	float riverSystemPosition[3];
 };
 
 #endif

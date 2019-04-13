@@ -37,7 +37,7 @@ public:
 		float variance;
 	};
 
-	void Generate(ID3D11Device* device, ID3D11DeviceContext* deviceContext, XMMATRIX& world, XMMATRIX& view, XMMATRIX& proj);
+	void Generate(ID3D11Device* device, ID3D11DeviceContext* deviceContext, XMMATRIX& world, XMMATRIX& view, XMMATRIX& proj, XMFLOAT3 positionOffset_);
 	void Render(ID3D11DeviceContext* deviceContext, XMMATRIX view, XMMATRIX proj);
 	float RandomFloatInRange(float min, float max);
 	std::vector<RiverQuad*> quadVector;
