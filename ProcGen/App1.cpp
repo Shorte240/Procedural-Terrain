@@ -20,6 +20,7 @@ void App1::init(HINSTANCE hinstance, HWND hwnd, int screenWidth, int screenHeigh
 	textureMgr->loadTexture("Grass", L"../res/grass.png");
 	textureMgr->loadTexture("Slope", L"../res/slope.png");
 	textureMgr->loadTexture("Rock", L"../res/rock.png");
+	textureMgr->loadTexture("Water", L"../res/water.jpg");
 
 	directionalLight = new Light;
 	directionalLight->setAmbientColour(0.1f, 0.1f, 0.1f, 1.0f);
@@ -207,7 +208,7 @@ bool App1::render()
 	//worldMatrix *= XMMatrixRotationRollPitchYaw(3.14/2, 0.0f, 0.0f);
 	//worldMatrix *= XMMatrixTranslation(mwP.x, 1.0f, mwP.z);
 
-	lSystem->Render(renderer->getDeviceContext(), viewMatrix, projectionMatrix, textureMgr->getTexture("Rock"), directionalLight);
+	lSystem->Render(renderer->getDeviceContext(), viewMatrix, projectionMatrix, textureMgr->getTexture("Water"), directionalLight);
 
 	// Render GUI
 	gui();

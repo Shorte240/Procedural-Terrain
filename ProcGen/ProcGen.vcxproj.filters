@@ -69,8 +69,11 @@
     <ClCompile Include="RiverQuad.cpp">
       <Filter>Source Files\Meshes</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\..\..\Frr%27s Stuff\AG0701a\Procedural-Terrain\ProcGen\ManipulationShader.cpp">
+    <ClCompile Include="ManipulationShader.cpp">
       <Filter>Source Files\Shaders</Filter>
+    </ClCompile>
+    <ClCompile Include="SizableQuad.cpp">
+      <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -104,8 +107,11 @@
     <ClInclude Include="RiverQuad.h">
       <Filter>Header Files\Meshes</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\..\Frr%27s Stuff\AG0701a\Procedural-Terrain\ProcGen\ManipulationShader.h">
+    <ClInclude Include="ManipulationShader.h">
       <Filter>Header Files\Shaders</Filter>
+    </ClInclude>
+    <ClInclude Include="SizableQuad.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -136,10 +142,10 @@
     <FxCompile Include="terrain_ps.hlsl">
       <Filter>Resource Files\Terrain</Filter>
     </FxCompile>
-    <FxCompile Include="..\..\..\..\Frr%27s Stuff\AG0701a\Procedural-Terrain\ProcGen\manipulation_ps.hlsl">
+    <FxCompile Include="manipulation_vs.hlsl">
       <Filter>Resource Files\Manipulation</Filter>
     </FxCompile>
-    <FxCompile Include="..\..\..\..\Frr%27s Stuff\AG0701a\Procedural-Terrain\ProcGen\manipulation_vs.hlsl">
+    <FxCompile Include="manipulation_ps.hlsl">
       <Filter>Resource Files\Manipulation</Filter>
     </FxCompile>
   </ItemGroup>

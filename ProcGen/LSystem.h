@@ -7,6 +7,7 @@
 #include "ColourShader.h"
 #include "ManipulationShader.h"
 #include "RiverQuad.h"
+#include "SizableQuad.h"
 #include <map>
 #include <stack>
 
@@ -62,6 +63,7 @@ private:
 	float RandomFloatInRange(float min, float max);
 	
 	std::vector<RiverQuad*> quadVector;
+	std::vector<SizableQuad*> sizeQuadVector;
 
 	const string axiom = "X";
 	std::map<char, string> rules;

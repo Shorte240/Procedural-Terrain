@@ -17,8 +17,6 @@ struct InputType
 	float4 position : SV_POSITION;
 	float2 tex : TEXCOORD0;
 	float3 normal : NORMAL;
-	float3 worldPosition : TEXCOORD1;
-	float time : TEXCOORD2;
 };
 
 // Calculate lighting intensity based on direction and normal. Combine with light colour.

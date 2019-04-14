@@ -60,7 +60,7 @@ void LSystem::Generate(ID3D11Device* device, ID3D11DeviceContext* deviceContext,
 			// Draw/Push back new quad using initialPos, translatedPos
 
 			// Translation amount
-			float translation = 2.0f * lSystemParams.height;
+			float translation = 2.0f * 4.5f;
 
 			// Get current world position
 			XMVECTOR s;
@@ -86,6 +86,7 @@ void LSystem::Generate(ID3D11Device* device, ID3D11DeviceContext* deviceContext,
 			
 			// Render quad using initialPos and currentPos
 			quadVector.push_back(new RiverQuad(device, deviceContext, lSystemParams.width, lSystemParams.height, initialPos, currentPos));
+			sizeQuadVector.push_back(new SizableQuad(device, deviceContext, 10.0f, 10.0f, XMFLOAT2(0.1, 0.5)));
 
 			break;
 		}
@@ -172,11 +173,17 @@ void LSystem::Render(ID3D11DeviceContext* deviceContext, XMMATRIX view, XMMATRIX
 {
 	for (int i = 0; i < quadVector.size(); i++)
 	{
-		quadVector[i]->sendData(deviceContext);
-		/*manipulationShader->setShaderParameters(deviceContext, worlds[i], view, proj, waterTexture, light, XMFLOAT4(waveParams.elapsedTime, waveParams.height, waveParams.frequency, waveParams.speed));
+		/*quadVector[i]->sendData(deviceContext);
+		manipulationShader->setShaderParameters(deviceContext, worlds[i], view, proj, waterTexture, light, XMFLOAT4(waveParams.elapsedTime, waveParams.height, waveParams.frequency, waveParams.speed));
 		manipulationShader->render(deviceContext, quadVector[i]->getIndexCount());*/
-		colourShader->setShaderParameters(deviceContext, worlds[i], view, proj);
-		colourShader->render(deviceContext, quadVector[i]->getIndexCount());
+		/*colourShader->setShaderParameters(deviceContext, worlds[i], view, proj);
+		colourShader->render(deviceContext, quadVector[i]->getIndexCount());*/
+
+		sizeQuadVector[i]->sendData(deviceContext);
+		/*colourShader->setShaderParameters(deviceContext, worlds[i], view, proj);
+		colourShader->render(deviceContext, sizeQuadVector[i]->getIndexCount());*/
+		manipulationShader->setShaderParameters(deviceContext, worlds[i], view, proj, waterTexture, light, XMFLOAT4(waveParams.elapsedTime, waveParams.height, waveParams.frequency, waveParams.speed));
+		manipulationShader->render(deviceContext, sizeQuadVector[i]->getIndexCount());
 	}
 }
 

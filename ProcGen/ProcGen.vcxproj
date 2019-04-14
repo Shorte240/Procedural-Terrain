@@ -125,10 +125,11 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\..\Frr%27s Stuff\AG0701a\Procedural-Terrain\ProcGen\ManipulationShader.cpp" />
+    <ClCompile Include="ManipulationShader.cpp" />
     <ClCompile Include="LSystem.cpp" />
     <ClCompile Include="RiverQuad.cpp" />
     <ClCompile Include="SimplexNoise.cpp" />
+    <ClCompile Include="SizableQuad.cpp" />
     <ClCompile Include="Terrain.cpp" />
     <ClCompile Include="TerrainShader.cpp" />
     <ClCompile Include="App1.cpp" />
@@ -138,10 +139,11 @@
     <ClCompile Include="TessellationShader.cpp" />
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\..\..\Frr%27s Stuff\AG0701a\Procedural-Terrain\ProcGen\ManipulationShader.h" />
+    <ClInclude Include="ManipulationShader.h" />
     <ClInclude Include="LSystem.h" />
     <ClInclude Include="RiverQuad.h" />
     <ClInclude Include="SimplexNoise.h" />
+    <ClInclude Include="SizableQuad.h" />
     <ClInclude Include="Terrain.h" />
     <ClInclude Include="TerrainShader.h" />
     <ClInclude Include="App1.h" />
@@ -151,17 +153,19 @@
     <ClInclude Include="TessellationShader.h" />
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="..\..\..\..\Frr%27s Stuff\AG0701a\Procedural-Terrain\ProcGen\manipulation_ps.hlsl">
+    <FxCompile Include="manipulation_ps.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Pixel</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Pixel</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Pixel</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">5.0</ShaderModel>
     </FxCompile>
-    <FxCompile Include="..\..\..\..\Frr%27s Stuff\AG0701a\Procedural-Terrain\ProcGen\manipulation_vs.hlsl">
+    <FxCompile Include="manipulation_vs.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Vertex</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Vertex</ShaderType>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Vertex</ShaderType>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">5.0</ShaderModel>
     </FxCompile>
     <FxCompile Include="terrain_ps.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
@@ -193,7 +197,7 @@
     </FxCompile>
     <FxCompile Include="tessellation_gs.hlsl">
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Geometry</ShaderType>
-      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">4.0</ShaderModel>
+      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">5.0</ShaderModel>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Geometry</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">4.0</ShaderModel>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Geometry</ShaderType>
