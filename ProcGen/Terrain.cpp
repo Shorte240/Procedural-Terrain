@@ -960,9 +960,9 @@ void Terrain::CalculateNormals()
 			index = (j * height) + i;
 
 			// Normalize the final shared normal for this vertex and store it in the height map array.
-			vertices[index].normal.x = (-1) * (sum[0] / length);
-			vertices[index].normal.y = (-1) * (sum[1] / length);
-			vertices[index].normal.z = (-1) * (sum[2] / length);
+			vertices[index].normal.x = (-1.0f) * (sum[0] / length);
+			vertices[index].normal.y = (-1.0f) * (sum[1] / length);
+			vertices[index].normal.z = (-1.0f) * (sum[2] / length);
 		}
 	}
 
@@ -970,13 +970,13 @@ void Terrain::CalculateNormals()
 	delete[] normals;
 	normals = 0;
 
-	/*for (int y = 1; y < height; y++) 
+	/*for (int y = 1; y < height - 2; y++) 
 	{
-		for (int x = 1; x < width; x++) 
+		for (int x = 1; x < width - 2; x++) 
 		{
-			int vertexIdentity = ((height + 1) * y) + x;
-			int vertexIdentityAbove = ((height + 1) * (y + 1)) + x;
-			int vertexIdentityBelow = ((height + 1) * (y - 1)) + x;
+			int vertexIdentity = ((width + 1) * y) + x;
+			int vertexIdentityAbove = ((width + 1) * (y + 1)) + x;
+			int vertexIdentityBelow = ((width + 1) * (y - 1)) + x;
 
 			XMVECTOR A = XMLoadFloat3(&vertices[vertexIdentity + 1].position);
 

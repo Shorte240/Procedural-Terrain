@@ -30,13 +30,14 @@ float4 calculateLighting(float3 lightDirection, float3 normal, float4 ldiffuse)
 float4 main(InputType input) : SV_TARGET
 {
 	//float4 textureColor = grassTexture.Sample(Sampler0, input.tex);
-	//float4 lightColour = 0.f;
+	//float4 lightColour = (0.0f, 0.0f, 0.0f, 1.0f);
+	////float4 lightColour = 0.0f;
 
-	//lightColour += calculateLighting(direction.xyz, input.normal, diffuse);
+	//lightColour += calculateLighting(-direction.xyz, input.normal, diffuse);
 
 	//lightColour += ambient;
 
-	////return saturate(lightColour) * textureColor;
+	//return saturate(lightColour) * textureColor;
 	//return saturate(lightColour);// * textureColor;
 
 	float4 grassColor;
@@ -45,9 +46,8 @@ float4 main(InputType input) : SV_TARGET
 	float slope;
 	float blendAmount;
 	float4 textureColor;
-	float3 lightDir;
 	float lightIntensity;
-	float4 color;
+	float4 color = (0.0f, 0.0f, 0.0f, 1.0f);
 
 	// Sample the grass color from the texture using the sampler at this texture coordinate location.
 	grassColor = grassTexture.Sample(Sampler0, input.tex);
@@ -82,20 +82,15 @@ float4 main(InputType input) : SV_TARGET
 	}
 	//Now do the regular lighting and add the lighting value to the texture value to get the final output color.
 
-	// Invert the light direction for calculations.
-	lightDir = -direction.xyz;
+	color += ambient;
 
-	// Calculate the amount of light on this pixel.
-	lightIntensity = saturate(dot(input.normal, lightDir));
-
-	// Determine the final diffuse color based on the diffuse color and the amount of light intensity.
-	color = diffuse * lightIntensity;
+	color += calculateLighting(-direction.xyz, input.normal, diffuse);
 
 	// Saturate the final light color.
 	color = saturate(color);
 
 	// Multiply the texture color and the final light color to get the result.
-	//color = color * textureColor;
+	color = color * textureColor;
 
 	return color;
 }

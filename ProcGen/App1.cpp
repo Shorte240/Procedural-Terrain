@@ -24,7 +24,7 @@ void App1::init(HINSTANCE hinstance, HWND hwnd, int screenWidth, int screenHeigh
 
 	directionalLight = new Light;
 	directionalLight->setAmbientColour(0.1f, 0.1f, 0.1f, 1.0f);
-	directionalLight->setDiffuseColour(0.6f, 0.6f, 0.6f, 1.0f);
+	directionalLight->setDiffuseColour(1.0f, 1.0f, 1.0f, 1.0f);
 	directionalLight->setDirection(0.5f, -0.5f, 0.0f);
 
 	displacementHeight = 1.0f;
@@ -350,7 +350,7 @@ void App1::gui()
 	{
 		if (ImGui::TreeNode("Variables"))
 		{
-			ImGui::InputFloat3("Position", riverSystemPosition);
+			ImGui::DragFloat3("Position", riverSystemPosition);
 			ImGui::InputInt("Iterations", &lSystem->lSystemParams.iterations);
 			ImGui::InputFloat("Angle", &lSystem->lSystemParams.angle);
 			ImGui::InputFloat("Width", &lSystem->lSystemParams.width);
@@ -360,9 +360,9 @@ void App1::gui()
 			ImGui::TreePop();
 		}
 
+		lSystem->waveParams.elapsedTime += timer->getTime();
 		if (ImGui::TreeNode("Wave Variables"))
 		{
-			lSystem->waveParams.elapsedTime += timer->getTime();
 			ImGui::SliderFloat("Wave Height", &lSystem->waveParams.height, 0, 20);
 			ImGui::SliderFloat("Wave Frequency", &lSystem->waveParams.frequency, 0, 15);
 			ImGui::SliderFloat("Wave Speed", &lSystem->waveParams.speed, 0, 5);
