@@ -9,13 +9,10 @@ LSystem::LSystem(ID3D11Device* device, HWND hwnd)
 
 	lSystemParams.iterations = 2;
 	lSystemParams.angle = 45.0f;
-	lSystemParams.width = 0.03125f;
-	lSystemParams.height = 0.5f;
-	lSystemParams.minLeafLength = 0.5f;
-	lSystemParams.maxLeafLength = 1.0f;
-	lSystemParams.minBranchLength = 1.0f;
-	lSystemParams.maxBranchLength = 2.0f;
-	lSystemParams.variance = 2.0f;
+	lSystemParams.width = 10.0f;
+	lSystemParams.height = 10.0f;
+	lSystemParams.scaleX = 0.1f;
+	lSystemParams.scaleY = 0.5f;
 
 	waveParams.elapsedTime = 0.0f;
 	waveParams.height = 1.0f;
@@ -34,6 +31,7 @@ void LSystem::Generate(ID3D11Device* device, ID3D11DeviceContext* deviceContext,
 {
 	currentPath = axiom;
 	quadVector.clear();
+	sizeQuadVector.clear();
 	worlds.clear();
 	
 	BuildString();
@@ -60,7 +58,8 @@ void LSystem::Generate(ID3D11Device* device, ID3D11DeviceContext* deviceContext,
 			// Draw/Push back new quad using initialPos, translatedPos
 
 			// Translation amount
-			float translation = 2.0f * 4.5f;
+			//float translation = 2.0f * 4.5f;
+			float translation = 2.0f * ((lSystemParams.height * lSystemParams.scaleY) - lSystemParams.scaleY);
 
 			// Get current world position
 			XMVECTOR s;
@@ -86,7 +85,7 @@ void LSystem::Generate(ID3D11Device* device, ID3D11DeviceContext* deviceContext,
 			
 			// Render quad using initialPos and currentPos
 			quadVector.push_back(new RiverQuad(device, deviceContext, lSystemParams.width, lSystemParams.height, initialPos, currentPos));
-			sizeQuadVector.push_back(new SizableQuad(device, deviceContext, 10.0f, 10.0f, XMFLOAT2(0.1, 0.5)));
+			sizeQuadVector.push_back(new SizableQuad(device, deviceContext, lSystemParams.width, lSystemParams.height, XMFLOAT2(lSystemParams.scaleX, lSystemParams.scaleY)));
 
 			break;
 		}
@@ -192,6 +191,7 @@ void LSystem::ClearSystem()
 	// Clear all data storing vectors
 	// To remove the L-System from the world
 	quadVector.clear();
+	sizeQuadVector.clear();
 	worlds.clear();
 }
 

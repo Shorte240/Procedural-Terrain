@@ -32,11 +32,8 @@ public:
 		float angle;
 		float width;
 		float height;
-		float minLeafLength;
-		float maxLeafLength;
-		float minBranchLength;
-		float maxBranchLength;
-		float variance;
+		float scaleX;
+		float scaleY;
 	};
 
 	struct WaveVariables

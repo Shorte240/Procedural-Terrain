@@ -355,11 +355,8 @@ void App1::gui()
 			ImGui::InputFloat("Angle", &lSystem->lSystemParams.angle);
 			ImGui::InputFloat("Width", &lSystem->lSystemParams.width);
 			ImGui::InputFloat("Height", &lSystem->lSystemParams.height);
-			ImGui::InputFloat("Min Leaf Length", &lSystem->lSystemParams.minLeafLength);
-			ImGui::InputFloat("Max Leaf Length", &lSystem->lSystemParams.maxLeafLength);
-			ImGui::InputFloat("Min Branch Length", &lSystem->lSystemParams.minBranchLength);
-			ImGui::InputFloat("Max Branch Length", &lSystem->lSystemParams.maxBranchLength);
-			ImGui::InputFloat("Variance", &lSystem->lSystemParams.variance);
+			ImGui::InputFloat("X Scale", &lSystem->lSystemParams.scaleX);
+			ImGui::InputFloat("Y Scale", &lSystem->lSystemParams.scaleY);
 			ImGui::TreePop();
 		}
 
