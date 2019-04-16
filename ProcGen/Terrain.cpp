@@ -135,6 +135,23 @@ void Terrain::GeneratePlane(ID3D11Device* device)
 	// Create all the vers based on the top left position 
 	int index = 0;
 
+	int incrementCount, tuCount, tvCount;
+	float incrementValue, tuCoordinate, tvCoordinate;
+
+	// Calculate how much to increment the texture coordinates by.
+	incrementValue = (float)TEXTURE_REPEAT / (float)quad_x;
+
+	// Calculate how many times to repeat the texture.
+	incrementCount = quad_x / TEXTURE_REPEAT;
+
+	// Initialize the tu and tv coordinate values.
+	tuCoordinate = 1.0f;
+	tvCoordinate = 0.0f;
+
+	// Initialize the tu and tv coordinate indexes.
+	tuCount = 0;
+	tvCount = 0;
+
 	for (int l = 0; l < height; l++)
 	{
 		for (int w = 0; w < width; w++)
@@ -146,14 +163,35 @@ void Terrain::GeneratePlane(ID3D11Device* device)
 			vert.normal = XMFLOAT3(0.0f, 1.0f, 0.0f);
 
 			// Calculate the texture coordinate
-			vert.texture = XMFLOAT2((float)w / width, (float)l / height);
+			//vert.texture = XMFLOAT2((float)w / width, (float)l / height);
+			vert.texture = XMFLOAT2(tuCoordinate, tvCoordinate);
+
+			// Increment the tu texture coordinate by the increment value and increment the index by one.
+			tuCoordinate -= incrementValue;
+			tuCount++;
+
+			// Check if at the far right end of the texture and if so then start at the beginning again.
+			if (tuCount == incrementCount)
+			{
+				tuCoordinate = 1.0f;
+				tuCount = 0;
+			}
 
 			// Store the vert position 
 			vertices[index] = vert;
 
 			// keep track of where in the array
 			index++;
+		}
+		// Increment the tv texture coordinate by the increment value and increment the index by one.
+		tvCoordinate += incrementValue;
+		tvCount++;
 
+		// Check if at the top of the texture and if so then start at the bottom again.
+		if (tvCount == incrementCount)
+		{
+			tvCoordinate = 0.0f;
+			tvCount = 0;
 		}
 	}
 

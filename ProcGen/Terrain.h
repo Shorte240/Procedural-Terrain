@@ -12,6 +12,11 @@
 
 using namespace DirectX;
 
+/////////////
+// GLOBALS //
+/////////////
+const int TEXTURE_REPEAT = 32;
+
 class Terrain : public BaseMesh
 {
 public:
