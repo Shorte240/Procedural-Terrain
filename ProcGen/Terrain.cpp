@@ -135,63 +135,23 @@ void Terrain::GeneratePlane(ID3D11Device* device)
 	// Create all the vers based on the top left position 
 	int index = 0;
 
-	int incrementCount, tuCount, tvCount;
-	float incrementValue, tuCoordinate, tvCoordinate;
-
-	// Calculate how much to increment the texture coordinates by.
-	incrementValue = (float)TEXTURE_REPEAT / (float)quad_x;
-
-	// Calculate how many times to repeat the texture.
-	incrementCount = quad_x / TEXTURE_REPEAT;
-
-	// Initialize the tu and tv coordinate values.
-	tuCoordinate = 1.0f;
-	tvCoordinate = 0.0f;
-
-	// Initialize the tu and tv coordinate indexes.
-	tuCount = 0;
-	tvCount = 0;
-
 	for (int l = 0; l < height; l++)
 	{
 		for (int w = 0; w < width; w++)
 		{
-
 			VertexType vert;
 
 			vert.position = XMFLOAT3(topLeft.x + ((float)w * size_.x), 0.0f, topLeft.z - ((float)l * size_.y));
 			vert.normal = XMFLOAT3(0.0f, 1.0f, 0.0f);
 
 			// Calculate the texture coordinate
-			//vert.texture = XMFLOAT2((float)w / width, (float)l / height);
-			vert.texture = XMFLOAT2(tuCoordinate, tvCoordinate);
-
-			// Increment the tu texture coordinate by the increment value and increment the index by one.
-			tuCoordinate -= incrementValue;
-			tuCount++;
-
-			// Check if at the far right end of the texture and if so then start at the beginning again.
-			if (tuCount == incrementCount)
-			{
-				tuCoordinate = 1.0f;
-				tuCount = 0;
-			}
+			vert.texture = XMFLOAT2(vert.position.x, vert.position.z);
 
 			// Store the vert position 
 			vertices[index] = vert;
 
 			// keep track of where in the array
 			index++;
-		}
-		// Increment the tv texture coordinate by the increment value and increment the index by one.
-		tvCoordinate += incrementValue;
-		tvCount++;
-
-		// Check if at the top of the texture and if so then start at the bottom again.
-		if (tvCount == incrementCount)
-		{
-			tvCoordinate = 0.0f;
-			tvCount = 0;
 		}
 	}
 
@@ -588,7 +548,7 @@ void Terrain::SimplexNoiseFunction(ID3D11Device * device, float frequency, float
 	initBuffers(device);
 }
 
-void Terrain::FractalBrownianMotion(ID3D11Device * device, float frequency_, float gain_, float amplitude_, float lacunarity_, int octaves_, float scale_, bool ridged)
+void Terrain::FractalBrownianMotion(ID3D11Device * device, float frequency_, float gain_, float amplitude_, float lacunarity_, int octaves_, bool ridged)
 {
 	//for each pixel, get the value total = 0.0f; frequency = 1.0f/(float)hgrid; amplitude = gain;
 	
@@ -603,14 +563,13 @@ void Terrain::FractalBrownianMotion(ID3D11Device * device, float frequency_, flo
 			float amplitude = amplitude_;
 			float lacunarity = lacunarity_;
 			int octaves = octaves_;
-			float scale = scale_;
 
 			int index;
 			index = ((width)* y) + x;
 			for (int i = 0; i < octaves; i++) 
 			{
-				float sampleX = x / scale * frequency;
-				float sampleY = y / scale * frequency;
+				float sampleX = x / frequency;
+				float sampleY = y / frequency;
 
 				simplexValue += simplexNoise.noise(sampleX, sampleY);
 				if (!ridged)
@@ -630,16 +589,6 @@ void Terrain::FractalBrownianMotion(ID3D11Device * device, float frequency_, flo
 			vertices[index].position.y += noiseHeight;
 		}
 	}
-
-	/*for (int y = 0; y < height; y++)
-	{
-		for (int x = 0; x < width; x++)
-		{
-
-		}
-	}*/
-
-	//now that we have the value, put it in map[x][y]=total;
 
 	CalculateNormals();
 
@@ -711,12 +660,7 @@ void Terrain::Pick(ID3D11Device * device, XMVECTOR pickRayInWorldSpacePos, XMVEC
 		tri1V1 = XMVectorSet(tV1.x, tV1.y, tV1.z, 0.0f);
 		tri1V2 = XMVectorSet(tV2.x, tV2.y, tV2.z, 0.0f);
 		tri1V3 = XMVectorSet(tV3.x, tV3.y, tV3.z, 0.0f);
-
-		//Transform the vertices to world space
-		/*tri1V1 = XMVector3TransformCoord(tri1V1, worldSpace);
-		tri1V2 = XMVector3TransformCoord(tri1V2, worldSpace);
-		tri1V3 = XMVector3TransformCoord(tri1V3, worldSpace);*/
-
+		
 		//Find the normal using U, V coordinates (two edges)
 		XMVECTOR U = XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f);
 		XMVECTOR V = XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f);
@@ -770,11 +714,7 @@ void Terrain::Pick(ID3D11Device * device, XMVECTOR pickRayInWorldSpacePos, XMVEC
 				point1Index = indices2[(i * 3) + 0];
 				point2Index = indices2[(i * 3) + 1];
 				point3Index = indices2[(i * 3) + 2];
-
-				/*vertices[point1Index].position.y += 1.0f;
-				vertices[point2Index].position.y += 1.0f;
-				vertices[point3Index].position.y += 1.0f;*/
-
+				
 				XMFLOAT3 p;
 				XMStoreFloat3(&p, pointInPlane);
 
@@ -791,94 +731,6 @@ void Terrain::Pick(ID3D11Device * device, XMVECTOR pickRayInWorldSpacePos, XMVEC
 
 	initBuffers(device);
 }
-
-//XMFLOAT3 Terrain::Pick(ID3D11Device * device, XMVECTOR pickRayInWorldSpacePos, XMVECTOR pickRayInWorldSpaceDir)
-//{
-//	XMFLOAT3 p = XMFLOAT3(0.0f, 0.0f, 0.0f);
-//
-//	//Loop through each triangle in the object
-//	for (int i = 0; i < indexCount / 3; i++)
-//	{
-//		//Triangle's vertices V1, V2, V3
-//		XMVECTOR tri1V1 = XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f);
-//		XMVECTOR tri1V2 = XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f);
-//		XMVECTOR tri1V3 = XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f);
-//
-//		//Temporary 3d floats for each vertex
-//		XMFLOAT3 tV1, tV2, tV3;
-//
-//		//Get triangle 
-//		tV1 = vertices[indices2[(i * 3) + 0]].position;
-//		tV2 = vertices[indices2[(i * 3) + 1]].position;
-//		tV3 = vertices[indices2[(i * 3) + 2]].position;
-//
-//		tri1V1 = XMVectorSet(tV1.x, tV1.y, tV1.z, 0.0f);
-//		tri1V2 = XMVectorSet(tV2.x, tV2.y, tV2.z, 0.0f);
-//		tri1V3 = XMVectorSet(tV3.x, tV3.y, tV3.z, 0.0f);
-//
-//		//Transform the vertices to world space
-//		/*tri1V1 = XMVector3TransformCoord(tri1V1, worldSpace);
-//		tri1V2 = XMVector3TransformCoord(tri1V2, worldSpace);
-//		tri1V3 = XMVector3TransformCoord(tri1V3, worldSpace);*/
-//
-//		//Find the normal using U, V coordinates (two edges)
-//		XMVECTOR U = XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f);
-//		XMVECTOR V = XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f);
-//		XMVECTOR faceNormal = XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f);
-//
-//		U = tri1V2 - tri1V1;
-//		V = tri1V3 - tri1V1;
-//
-//		//Compute face normal by crossing U, V
-//		faceNormal = XMVector3Cross(U, V);
-//
-//		faceNormal = XMVector3Normalize(faceNormal);
-//
-//		//Calculate a point on the triangle for the plane equation
-//		XMVECTOR triPoint = tri1V1;
-//
-//		//Get plane equation ("Ax + By + Cz + D = 0") Variables
-//		float tri1A = XMVectorGetX(faceNormal);
-//		float tri1B = XMVectorGetY(faceNormal);
-//		float tri1C = XMVectorGetZ(faceNormal);
-//		float tri1D = (-tri1A * XMVectorGetX(triPoint) - tri1B * XMVectorGetY(triPoint) - tri1C * XMVectorGetZ(triPoint));
-//
-//		//Now we find where (on the ray) the ray intersects with the triangles plane
-//		float ep1, ep2, t = 0.0f;
-//		float planeIntersectX, planeIntersectY, planeIntersectZ = 0.0f;
-//		XMVECTOR pointInPlane = XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f);
-//
-//		ep1 = (XMVectorGetX(pickRayInWorldSpacePos) * tri1A) + (XMVectorGetY(pickRayInWorldSpacePos) * tri1B) + (XMVectorGetZ(pickRayInWorldSpacePos) * tri1C);
-//		ep2 = (XMVectorGetX(pickRayInWorldSpaceDir) * tri1A) + (XMVectorGetY(pickRayInWorldSpaceDir) * tri1B) + (XMVectorGetZ(pickRayInWorldSpaceDir) * tri1C);
-//
-//		//Make sure there are no divide-by-zeros
-//		if (ep2 != 0.0f)
-//			t = -(ep1 + tri1D) / (ep2);
-//
-//		if (t > 0.0f)    //Make sure you don't pick objects behind the camera
-//		{
-//			//Get the point on the plane
-//			planeIntersectX = XMVectorGetX(pickRayInWorldSpacePos) + XMVectorGetX(pickRayInWorldSpaceDir) * t;
-//			planeIntersectY = XMVectorGetY(pickRayInWorldSpacePos) + XMVectorGetY(pickRayInWorldSpaceDir) * t;
-//			planeIntersectZ = XMVectorGetZ(pickRayInWorldSpacePos) + XMVectorGetZ(pickRayInWorldSpaceDir) * t;
-//
-//			pointInPlane = XMVectorSet(planeIntersectX, planeIntersectY, planeIntersectZ, 0.0f);
-//
-//			//Call function to check if point is in the triangle
-//			if (PointInTriangle(tri1V1, tri1V2, tri1V3, pointInPlane))
-//			{
-//				XMStoreFloat3(&p, pointInPlane);
-//			}
-//		}
-//	}
-//
-//	delete indices2;
-//	indices2 = NULL;
-//
-//	initBuffers(device);
-//
-//	return p;
-//}
 
 void Terrain::CalculateNormals()
 {
@@ -1007,32 +859,6 @@ void Terrain::CalculateNormals()
 	// Release the temporary normals.
 	delete[] normals;
 	normals = 0;
-
-	/*for (int y = 1; y < height - 2; y++) 
-	{
-		for (int x = 1; x < width - 2; x++) 
-		{
-			int vertexIdentity = ((width + 1) * y) + x;
-			int vertexIdentityAbove = ((width + 1) * (y + 1)) + x;
-			int vertexIdentityBelow = ((width + 1) * (y - 1)) + x;
-
-			XMVECTOR A = XMLoadFloat3(&vertices[vertexIdentity + 1].position);
-
-			XMVECTOR B = XMLoadFloat3(&vertices[vertexIdentity - 1].position);
-
-			XMVECTOR AB = XMVector3Normalize(B - A);
-
-			XMVECTOR C = XMLoadFloat3(&vertices[vertexIdentityAbove].position);
-
-			XMVECTOR D = XMLoadFloat3(&vertices[vertexIdentityBelow].position);
-
-			XMVECTOR CD = XMVector3Normalize(D - C);
-
-			XMVECTOR vertexNormal = XMVector3Normalize(XMVector3Cross(AB, CD));
-
-			XMStoreFloat3(&vertices[vertexIdentity].normal, vertexNormal);
-		}
-	}*/
 }
 
 float Terrain::RandomIntRange(int min, int max)

@@ -33,15 +33,14 @@ void App1::init(HINSTANCE hinstance, HWND hwnd, int screenWidth, int screenHeigh
 	topLeft = 100;
 	topRight = 0;
 
-	perlinFrequency = 1.0f;
+	perlinFrequency = 0.135f;
 	perlinScale = 1.0f;
 
-	fBMFrequency = 1.0f;
-	fBMGain = 0.5f;
-	fBMAmplitude = 1.0f;
-	fBMLacunarity = 2.0f;
-	fBMOctaves = 10;
-	fBMScale = 27.6;
+	fBMFrequency = 10.0f;
+	fBMGain = 0.25f;
+	fBMAmplitude = 2.0f;
+	fBMLacunarity = 20.0f;
+	fBMOctaves = 10.0f;
 	fBMRidged = false;
 
 	pickDiameter = 9;
@@ -167,22 +166,6 @@ void App1::InteractWithTerrain()
 			//input->setRightMouse(false);
 		}
 	}
-
-	// Place a quad under the mouse world Pos
-	// To show where the terrain will be altered
-	/*POINT mousePos;
-
-	GetCursorPos(&mousePos);
-	ScreenToClient(wnd, &mousePos);
-
-	int mouseX = mousePos.x;
-	int mouseY = mousePos.y;
-
-	XMVECTOR prwsPos = XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f);
-	XMVECTOR prwsDir = XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f);
-	PickRayVector(mouseX, mouseY, prwsPos, prwsDir);
-
-	mwP = terrain->Pick(renderer->getDevice(), prwsPos, prwsDir);*/
 }
 
 bool App1::render()
@@ -204,9 +187,6 @@ bool App1::render()
 	terrain->sendData(renderer->getDeviceContext());
 	terrainShader->setShaderParameters(renderer->getDeviceContext(), worldMatrix, viewMatrix, projectionMatrix, textureMgr->getTexture("Grass"), textureMgr->getTexture("Slope"), textureMgr->getTexture("Rock"), directionalLight);
 	terrainShader->render(renderer->getDeviceContext(), terrain->getIndexCount());
-
-	//worldMatrix *= XMMatrixRotationRollPitchYaw(3.14/2, 0.0f, 0.0f);
-	//worldMatrix *= XMMatrixTranslation(mwP.x, 1.0f, mwP.z);
 
 	lSystem->Render(renderer->getDeviceContext(), viewMatrix, projectionMatrix, textureMgr->getTexture("Water"), directionalLight);
 
@@ -271,7 +251,6 @@ void App1::gui()
 
 		ImGui::TreePop();
 	}
-
 	if (ImGui::TreeNode("Simplex Noise"))
 	{
 		if (ImGui::TreeNode("Frequency & Scale"))
@@ -288,7 +267,6 @@ void App1::gui()
 
 		ImGui::TreePop();
 	}
-
 	if (ImGui::TreeNode("fBM"))
 	{
 		if (ImGui::TreeNode("Values"))
@@ -298,14 +276,13 @@ void App1::gui()
 			ImGui::InputFloat("Amplitude", &fBMAmplitude);
 			ImGui::InputFloat("Lacunarity", &fBMLacunarity);
 			ImGui::InputFloat("Octaves", &fBMOctaves);
-			ImGui::InputFloat("Scale", &fBMScale);
 			ImGui::Checkbox("Ridged", &fBMRidged);
 			ImGui::TreePop();
 		}
 
 		if (ImGui::Button("fBM")) 
 		{
-			terrain->FractalBrownianMotion(renderer->getDevice(), fBMFrequency, fBMGain, fBMAmplitude, fBMLacunarity, fBMOctaves, fBMScale, fBMRidged);
+			terrain->FractalBrownianMotion(renderer->getDevice(), fBMFrequency, fBMGain, fBMAmplitude, fBMLacunarity, fBMOctaves, fBMRidged);
 		}
 
 		ImGui::TreePop();

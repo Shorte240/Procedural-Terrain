@@ -38,7 +38,7 @@ private:
 	float displacementHeight;
 	float bottomLeft, bottomRight, topLeft, topRight;
 	float perlinFrequency, perlinScale;
-	float fBMFrequency, fBMGain, fBMAmplitude, fBMLacunarity, fBMOctaves, fBMScale;
+	float fBMFrequency, fBMGain, fBMAmplitude, fBMLacunarity, fBMOctaves;
 	int pickDiameter;
 	bool picking;
 	bool fBMRidged;

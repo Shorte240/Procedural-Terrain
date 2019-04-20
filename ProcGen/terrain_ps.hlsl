@@ -82,12 +82,12 @@ float4 main(InputType input) : SV_TARGET
 	}
 	//Now do the regular lighting and add the lighting value to the texture value to get the final output color.
 
-	color += ambient;
+	//color += ambient;
 
 	color += calculateLighting(-direction.xyz, input.normal, diffuse);
 
 	// Saturate the final light color.
-	color = saturate(color);
+	//color = saturate(color);
 
 	// Multiply the texture color and the final light color to get the result.
 	color = color * textureColor;

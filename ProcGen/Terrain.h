@@ -12,11 +12,6 @@
 
 using namespace DirectX;
 
-/////////////
-// GLOBALS //
-/////////////
-const int TEXTURE_REPEAT = 32;
-
 class Terrain : public BaseMesh
 {
 public:
@@ -33,10 +28,9 @@ public:
 	void CircleAlgorithm(ID3D11Device* device, float displacement, XMFLOAT3& point, int diameter);
 	void MidpointDisplacement(ID3D11Device* device, float displacement, float bottomLeftCornerValue, float bottomRightCornerValue, float topLeftCornerValue, float topRightCornerValue, bool currentCornerValues, bool setCornerValues, bool randomCornerValues);
 	void SimplexNoiseFunction(ID3D11Device * device, float frequency, float scale);
-	void FractalBrownianMotion(ID3D11Device * device, float frequency_, float gain_, float amplitude_, float lacunarity_, int octaves_, float scale_, bool ridged);
+	void FractalBrownianMotion(ID3D11Device * device, float frequency_, float gain_, float amplitude_, float lacunarity_, int octaves_, bool ridged);
 	void Voronoi(ID3D11Device* device, int regionCount);
 	void Pick(ID3D11Device * device, XMVECTOR pickRayInWorldSpacePos, XMVECTOR pickRayInWorldSpaceDir, float displacement, int diameter);
-	//XMFLOAT3 Pick(ID3D11Device * device, XMVECTOR pickRayInWorldSpacePos, XMVECTOR pickRayInWorldSpaceDir);
 
 private:
 	void initBuffers(ID3D11Device* device);
