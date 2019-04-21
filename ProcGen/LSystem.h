@@ -6,7 +6,6 @@
 #include "DXF.h"
 #include "ColourShader.h"
 #include "ManipulationShader.h"
-#include "RiverQuad.h"
 #include "SizableQuad.h"
 #include <map>
 #include <stack>

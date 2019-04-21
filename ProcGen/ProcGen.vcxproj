@@ -127,7 +127,6 @@
   <ItemGroup>
     <ClCompile Include="ManipulationShader.cpp" />
     <ClCompile Include="LSystem.cpp" />
-    <ClCompile Include="RiverQuad.cpp" />
     <ClCompile Include="SimplexNoise.cpp" />
     <ClCompile Include="SizableQuad.cpp" />
     <ClCompile Include="Terrain.cpp" />
@@ -135,13 +134,10 @@
     <ClCompile Include="App1.cpp" />
     <ClCompile Include="ColourShader.cpp" />
     <ClCompile Include="Main.cpp" />
-    <ClCompile Include="TessellatedPlane.cpp" />
-    <ClCompile Include="TessellationShader.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="ManipulationShader.h" />
     <ClInclude Include="LSystem.h" />
-    <ClInclude Include="RiverQuad.h" />
     <ClInclude Include="SimplexNoise.h" />
     <ClInclude Include="SizableQuad.h" />
     <ClInclude Include="Terrain.h" />
@@ -149,8 +145,6 @@
     <ClInclude Include="App1.h" />
     <ClInclude Include="ColourShader.h" />
     <ClInclude Include="resource.h" />
-    <ClInclude Include="TessellatedPlane.h" />
-    <ClInclude Include="TessellationShader.h" />
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="manipulation_ps.hlsl">
@@ -190,32 +184,6 @@
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
       <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">5.0</ShaderModel>
       <ObjectFileOutput Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(Directory)%(Filename).cso</ObjectFileOutput>
-    </FxCompile>
-    <FxCompile Include="tessellation_ds.hlsl">
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Domain</ShaderType>
-      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">5.0</ShaderModel>
-    </FxCompile>
-    <FxCompile Include="tessellation_gs.hlsl">
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Geometry</ShaderType>
-      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">5.0</ShaderModel>
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Geometry</ShaderType>
-      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">4.0</ShaderModel>
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Geometry</ShaderType>
-      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">4.0</ShaderModel>
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Geometry</ShaderType>
-      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Release|x64'">4.0</ShaderModel>
-    </FxCompile>
-    <FxCompile Include="tessellation_hs.hlsl">
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Hull</ShaderType>
-      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">5.0</ShaderModel>
-    </FxCompile>
-    <FxCompile Include="tessellation_ps.hlsl">
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Pixel</ShaderType>
-      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">5.0</ShaderModel>
-    </FxCompile>
-    <FxCompile Include="tessellation_vs.hlsl">
-      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Vertex</ShaderType>
-      <ShaderModel Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">5.0</ShaderModel>
     </FxCompile>
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
