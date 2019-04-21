@@ -48,6 +48,7 @@ private:
 	VertexType* vertices;
 	unsigned long* indices2;
 	XMFLOAT2 size_;
+	int textureRepeatAmount;
 
 	SimplexNoise simplexNoise;
 };

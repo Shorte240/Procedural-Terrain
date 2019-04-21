@@ -30,7 +30,6 @@ LSystem::~LSystem()
 void LSystem::Generate(ID3D11Device* device, ID3D11DeviceContext* deviceContext, XMMATRIX& world_, XMMATRIX& view_, XMMATRIX& proj_, XMFLOAT3 positionOffset_)
 {
 	currentPath = axiom;
-	quadVector.clear();
 	sizeQuadVector.clear();
 	worlds.clear();
 	
@@ -58,7 +57,6 @@ void LSystem::Generate(ID3D11Device* device, ID3D11DeviceContext* deviceContext,
 			// Draw/Push back new quad using initialPos, translatedPos
 
 			// Translation amount
-			//float translation = 2.0f * 4.5f;
 			float translation = 2.0f * ((lSystemParams.height * lSystemParams.scaleY) - lSystemParams.scaleY);
 
 			// Get current world position
@@ -84,7 +82,6 @@ void LSystem::Generate(ID3D11Device* device, ID3D11DeviceContext* deviceContext,
 			XMStoreFloat3(&currentPos, t);
 			
 			// Render quad using initialPos and currentPos
-			quadVector.push_back(new RiverQuad(device, deviceContext, lSystemParams.width, lSystemParams.height, initialPos, currentPos));
 			sizeQuadVector.push_back(new SizableQuad(device, deviceContext, lSystemParams.width, lSystemParams.height, XMFLOAT2(lSystemParams.scaleX, lSystemParams.scaleY)));
 
 			break;
@@ -170,17 +167,9 @@ void LSystem::Generate(ID3D11Device* device, ID3D11DeviceContext* deviceContext,
 
 void LSystem::Render(ID3D11DeviceContext* deviceContext, XMMATRIX view, XMMATRIX proj, ID3D11ShaderResourceView* waterTexture, Light* light)
 {
-	for (int i = 0; i < quadVector.size(); i++)
+	for (int i = 0; i < sizeQuadVector.size(); i++)
 	{
-		/*quadVector[i]->sendData(deviceContext);
-		manipulationShader->setShaderParameters(deviceContext, worlds[i], view, proj, waterTexture, light, XMFLOAT4(waveParams.elapsedTime, waveParams.height, waveParams.frequency, waveParams.speed));
-		manipulationShader->render(deviceContext, quadVector[i]->getIndexCount());*/
-		/*colourShader->setShaderParameters(deviceContext, worlds[i], view, proj);
-		colourShader->render(deviceContext, quadVector[i]->getIndexCount());*/
-
 		sizeQuadVector[i]->sendData(deviceContext);
-		/*colourShader->setShaderParameters(deviceContext, worlds[i], view, proj);
-		colourShader->render(deviceContext, sizeQuadVector[i]->getIndexCount());*/
 		manipulationShader->setShaderParameters(deviceContext, worlds[i], view, proj, waterTexture, light, XMFLOAT4(waveParams.elapsedTime, waveParams.height, waveParams.frequency, waveParams.speed));
 		manipulationShader->render(deviceContext, sizeQuadVector[i]->getIndexCount());
 	}
@@ -190,7 +179,6 @@ void LSystem::ClearSystem()
 {
 	// Clear all data storing vectors
 	// To remove the L-System from the world
-	quadVector.clear();
 	sizeQuadVector.clear();
 	worlds.clear();
 }

@@ -59,7 +59,6 @@ private:
 	void BuildString();
 	float RandomFloatInRange(float min, float max);
 	
-	std::vector<RiverQuad*> quadVector;
 	std::vector<SizableQuad*> sizeQuadVector;
 
 	const string axiom = "X";

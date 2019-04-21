@@ -8,6 +8,8 @@ Terrain::Terrain(ID3D11Device* device, ID3D11DeviceContext* deviceContext, int _
 	height = _height;
 	size_ = quadScale;
 
+	textureRepeatAmount = 32;
+
 	// Vertex count is width and height
 	vertexCount = height * width;
 
@@ -145,7 +147,8 @@ void Terrain::GeneratePlane(ID3D11Device* device)
 			vert.normal = XMFLOAT3(0.0f, 1.0f, 0.0f);
 
 			// Calculate the texture coordinate
-			vert.texture = XMFLOAT2(vert.position.x, vert.position.z);
+			//vert.texture = XMFLOAT2(vert.position.x, vert.position.z);
+			vert.texture = XMFLOAT2((float)w * textureRepeatAmount / (float)width, (float)l * textureRepeatAmount / (float)height);
 
 			// Store the vert position 
 			vertices[index] = vert;
