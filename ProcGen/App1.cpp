@@ -1,5 +1,6 @@
-// Lab1.cpp
-// Lab 1 example, simple coloured triangle mesh
+// App1.cpp
+// Generates a terrain mesh which can be procedurally edited by the user
+// Also generates an L-System river which can be moved around the world
 #include "App1.h"
 
 App1::App1()
@@ -11,22 +12,27 @@ void App1::init(HINSTANCE hinstance, HWND hwnd, int screenWidth, int screenHeigh
 	// Call super/parent init function (required!)
 	BaseApplication::init(hinstance, hwnd, screenWidth, screenHeight, in, VSYNC, FULL_SCREEN);
 
-	// Create Mesh object and shader object
+	// Create terrain and l-system meshes
 	terrain = new Terrain(renderer->getDevice(), renderer->getDeviceContext(), 129, 129, XMFLOAT2(0.5,0.5));
 	lSystem = new LSystem(renderer->getDevice(), hwnd);
 
+	// Create terrain shader
 	terrainShader = new TerrainShader(renderer->getDevice(), hwnd);
 
+	// Load in textures for the terrain and l-system
 	textureMgr->loadTexture("Grass", L"../res/grass.png");
 	textureMgr->loadTexture("Slope", L"../res/slope.png");
 	textureMgr->loadTexture("Rock", L"../res/rock.png");
 	textureMgr->loadTexture("Water", L"../res/water.jpg");
 
+	// Initialise the directional light
 	directionalLight = new Light;
 	directionalLight->setAmbientColour(0.1f, 0.1f, 0.1f, 1.0f);
 	directionalLight->setDiffuseColour(1.0f, 1.0f, 1.0f, 1.0f);
 	directionalLight->setDirection(0.5f, -0.5f, 0.0f);
 
+	// Give initial values for all the variables
+	// used in the terrain manipulation functions
 	displacementHeight = 1.0f;
 	bottomLeft = 25;
 	bottomRight = 30;
@@ -59,13 +65,28 @@ App1::~App1()
 	// Run base application deconstructor
 	BaseApplication::~BaseApplication();
 
-	// Release the Direct3D object.
+	// Release the terrain object.
 	if (terrain)
 	{
 		delete terrain;
 		terrain = 0;
 	}
 
+	// Release the l-system object.
+	if (lSystem)
+	{
+		delete lSystem;
+		lSystem = 0;
+	}
+
+	// Release the light object.
+	if (directionalLight)
+	{
+		delete directionalLight;
+		directionalLight = 0;
+	}
+
+	// Release the terrain shader.
 	if (terrainShader)
 	{
 		delete terrainShader;
@@ -84,6 +105,7 @@ bool App1::frame()
 		return false;
 	}
 
+	// Use the mouse to alter terrain height
 	InteractWithTerrain();
 	
 	// Render the graphics.
@@ -98,72 +120,89 @@ bool App1::frame()
 
 void App1::PickRayVector(float mouseX, float mouseY, XMVECTOR & pickRayInWorldSpacePos, XMVECTOR & pickRayInWorldSpaceDir)
 {
+	// Initialise vectors for later calulation
 	XMVECTOR pickRayInViewSpaceDir = XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f);
 	XMVECTOR pickRayInViewSpacePos = XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f);
 
+	// Vector position
 	float PRVecX, PRVecY, PRVecZ;
 
-	// *** ---- MAY NEED TO CHANGE TO RENDERER'S PROJ MATRIX ----- *** //
+	// Matrix for camera projection
 	XMFLOAT4X4 camProj;
 	XMStoreFloat4x4(&camProj, renderer->getProjectionMatrix());
-	// *** ---- MAY NEED TO CHANGE TO RENDERER'S PROJ MATRIX ----- *** //
 
 	//Transform 2D pick position on screen space to 3D ray in View space
 	PRVecX = (((2.0f * mouseX) / sWidth) - 1) / camProj(0,0);
 	PRVecY = -(((2.0f * mouseY) / sHeight) - 1) / camProj(1, 1);
 	PRVecZ = 1.0f;	//View space's Z direction ranges from 0 to 1, so we set 1 since the ray goes "into" the screen
 
+	// Calculate the ray in view space
 	pickRayInViewSpaceDir = XMVectorSet(PRVecX, PRVecY, PRVecZ, 0.0f);
-
-	//Uncomment this line if you want to use the center of the screen (client area)
-	//to be the point that creates the picking ray (eg. first person shooter)
-	//pickRayInViewSpaceDir = XMVectorSet(0.0f, 0.0f, 1.0f, 0.0f);
 
 	// Transform 3D Ray from View space to 3D ray in World space
 	XMMATRIX pickRayToWorldSpaceMatrix;
 	XMVECTOR matInvDeter;	//We don't use this, but the xna matrix inverse function requires the first parameter to not be null
 
+	// Calulate the ray in world space
 	pickRayToWorldSpaceMatrix = XMMatrixInverse(&matInvDeter, camera->getViewMatrix());	//Inverse of View Space matrix is World space matrix
 
+	// Transform the rays
 	pickRayInWorldSpacePos = XMVector3TransformCoord(pickRayInViewSpacePos, pickRayToWorldSpaceMatrix);
 	pickRayInWorldSpaceDir = XMVector3TransformNormal(pickRayInViewSpaceDir, pickRayToWorldSpaceMatrix);
 }
 
 void App1::InteractWithTerrain()
 {
+	// Picking enabled, alter terrain
 	if (picking)
 	{
+		// Increase the height of the terrain
 		if (input->isLeftMouseDown())
 		{
+			// Mouse co-ords in screen co-ordinates
 			POINT mousePos;
 
+			// Get the current mouse position in screen co-ordinates
+			// and convert it to world co-ordinates
 			GetCursorPos(&mousePos);
 			ScreenToClient(wnd, &mousePos);
 
+			// Get the mouse position in world co-ords
 			int mouseX = mousePos.x;
 			int mouseY = mousePos.y;
 
+			// Vectors to store the pick ray in world space's position and direction
 			XMVECTOR prwsPos, prwsDir;
+
+			// Calculate the pick ray vector
 			PickRayVector(mouseX, mouseY, prwsPos, prwsDir);
 
+			// Alter the terrain using the pick ray
 			terrain->Pick(renderer->getDevice(), prwsPos, prwsDir, displacementHeight, pickDiameter);
-			//input->setLeftMouse(false);
 		}
+		// Decrease the height of the terrain
 		if (input->isRightMouseDown())
 		{
+			// Mouse co-ords in screen co-ordinates
 			POINT mousePos;
 
+			// Get the current mouse position in screen co-ordinates
+			// and convert it to world co-ordinates
 			GetCursorPos(&mousePos);
 			ScreenToClient(wnd, &mousePos);
 
+			// Get the mouse position in world co-ords
 			int mouseX = mousePos.x;
 			int mouseY = mousePos.y;
 
+			// Vectors to store the pick ray in world space's position and direction
 			XMVECTOR prwsPos, prwsDir;
+
+			// Calculate the pick ray vector
 			PickRayVector(mouseX, mouseY, prwsPos, prwsDir);
 
+			// Alter the terrain using the pick ray
 			terrain->Pick(renderer->getDevice(), prwsPos, prwsDir, -displacementHeight, pickDiameter);
-			//input->setRightMouse(false);
 		}
 	}
 }
@@ -183,11 +222,12 @@ bool App1::render()
 	viewMatrix = camera->getViewMatrix();
 	projectionMatrix = renderer->getProjectionMatrix();
 
-	// Send geometry data, set shader parameters, render object with shader
+	// Send geometry data, set shader parameters, render terrain with shader
 	terrain->sendData(renderer->getDeviceContext());
 	terrainShader->setShaderParameters(renderer->getDeviceContext(), worldMatrix, viewMatrix, projectionMatrix, textureMgr->getTexture("Grass"), textureMgr->getTexture("Slope"), textureMgr->getTexture("Rock"), directionalLight);
 	terrainShader->render(renderer->getDeviceContext(), terrain->getIndexCount());
 
+	// Render the l-system
 	lSystem->Render(renderer->getDeviceContext(), viewMatrix, projectionMatrix, textureMgr->getTexture("Water"), directionalLight);
 
 	// Render GUI
@@ -210,28 +250,48 @@ void App1::gui()
 	ImGui::Text("FPS: %.2f", timer->getFPS());
 	ImGui::Checkbox("Wireframe mode", &wireframeToggle);
 
+	// Displacement value used for majority of terrain displacement
 	ImGui::InputFloat("Displacement Value", &displacementHeight);
 
-	if (ImGui::Button("Flat Plane")) {
+	// Generate a flat plane
+	if (ImGui::Button("Flat Plane")) 
+	{
 		terrain->GeneratePlane(renderer->getDevice());
 	}
-	if (ImGui::Button("Generate Height")) {
+
+	// Generate a random heighted terrain
+	if (ImGui::Button("Generate Height")) 
+	{
 		terrain->GenerateHeightMap(renderer->getDevice());
 	}
-	if (ImGui::Button("Smooth Terrain")) {
+
+	// Smoothe the terrain
+	if (ImGui::Button("Smooth Terrain")) 
+	{
 		terrain->SmoothVertices(renderer->getDevice());
 	}
-	if (ImGui::Button("Faulting")) {
+
+	// Perform faulting on the terrain
+	if (ImGui::Button("Faulting")) 
+	{
 		terrain->Faulting(renderer->getDevice(), displacementHeight);
 	}
-	if (ImGui::Button("Circle Algorithm")) {
+
+	// Perform the circle algorithm for height displacement on the terrain
+	if (ImGui::Button("Circle Algorithm")) 
+	{
 		terrain->CircleAlgorithm(renderer->getDevice(), displacementHeight);
 	}
+
+	// Displace the terrain height via midpoint displacement
 	if (ImGui::TreeNode("Midpoint Displacement"))
 	{
+		// Toggles to choose between what corner values are used
 		ImGui::Checkbox("Current Corner Values", &currentCornerValues);
 		ImGui::Checkbox("Set Corner Values", &setCornerValues);
 		ImGui::Checkbox("Random Corner Values", &randomCornerValues);
+
+		// If the user wants to enter values for the corner heights
 		if (setCornerValues)
 		{
 			if (ImGui::TreeNode("Corner Values"))
@@ -244,6 +304,7 @@ void App1::gui()
 			}
 		}
 
+		// Displace the terrain via midpoint displacement
 		if (ImGui::Button("Midpoint Displacement")) 
 		{
 			terrain->MidpointDisplacement(renderer->getDevice(), displacementHeight, bottomLeft, bottomRight, topLeft, topRight, currentCornerValues, setCornerValues, randomCornerValues);
@@ -251,8 +312,11 @@ void App1::gui()
 
 		ImGui::TreePop();
 	}
+
+	// Alter the terrain via simplex noise
 	if (ImGui::TreeNode("Simplex Noise"))
 	{
+		// Values for frequency & scale
 		if (ImGui::TreeNode("Frequency & Scale"))
 		{
 			ImGui::InputFloat("Frequency", &perlinFrequency);
@@ -260,6 +324,7 @@ void App1::gui()
 			ImGui::TreePop();
 		}
 
+		// Simplex noise function
 		if (ImGui::Button("Simplex Noise"))
 		{
 			terrain->SimplexNoiseFunction(renderer->getDevice(), perlinFrequency, perlinScale);
@@ -267,8 +332,11 @@ void App1::gui()
 
 		ImGui::TreePop();
 	}
+
+	// Fractal Brownian Motion
 	if (ImGui::TreeNode("fBM"))
 	{
+		// Values for fractal brownian motion
 		if (ImGui::TreeNode("Values"))
 		{
 			ImGui::InputFloat("Frequency", &fBMFrequency);
@@ -280,6 +348,7 @@ void App1::gui()
 			ImGui::TreePop();
 		}
 
+		// Fractal brownian motion function
 		if (ImGui::Button("fBM")) 
 		{
 			terrain->FractalBrownianMotion(renderer->getDevice(), fBMFrequency, fBMGain, fBMAmplitude, fBMLacunarity, fBMOctaves, fBMRidged);
@@ -288,14 +357,17 @@ void App1::gui()
 		ImGui::TreePop();
 	}
 
+	// Voronoi region height displacement of the terrain
 	if (ImGui::TreeNode("Voronoi"))
 	{
+		// Value for number of regions for the function to use
 		if (ImGui::TreeNode("Region Count"))
 		{
 			ImGui::InputInt("Region Count", &regionCount);
 			ImGui::TreePop();
 		}
 
+		// Voronoi region function
 		if (ImGui::Button("Voronoi"))
 		{
 			terrain->Voronoi(renderer->getDevice(), regionCount);
@@ -304,8 +376,12 @@ void App1::gui()
 		ImGui::TreePop();
 	}
 
+	// Function which takes mouse click and displaces terrain
 	if (ImGui::TreeNode("Picking"))
 	{
+		// Alter diameter either via ImGui interface
+		// or +/- numpad keys
+		// Scroll wheel implementation was wanted for this
 		ImGui::InputInt("Pick Diameter", &pickDiameter);
 		if (input->isKeyDown(VK_ADD))
 		{
@@ -318,13 +394,16 @@ void App1::gui()
 			input->SetKeyUp(VK_SUBTRACT);
 		}
 
+		// Toggle to enable/disable picking on the terrain
 		ImGui::Checkbox("Picking Mode", &picking);
 
 		ImGui::TreePop();
 	}
 
+	// L-System functions
 	if (ImGui::TreeNode("L-Systems"))
 	{
+		// Variables for the l-system
 		if (ImGui::TreeNode("Variables"))
 		{
 			ImGui::DragFloat3("Position", riverSystemPosition);
@@ -337,6 +416,8 @@ void App1::gui()
 			ImGui::TreePop();
 		}
 
+		// Get the elapsed time to pass to manipulation shader
+		// used for the river
 		lSystem->waveParams.elapsedTime += timer->getTime();
 		if (ImGui::TreeNode("Wave Variables"))
 		{
@@ -346,6 +427,7 @@ void App1::gui()
 			ImGui::TreePop();
 		}
 
+		// Generate a rive l-system
 		if (ImGui::Button("L-System"))
 		{
 			XMMATRIX worldMatrix, viewMatrix, projectionMatrix;
@@ -355,6 +437,7 @@ void App1::gui()
 			lSystem->Generate(renderer->getDevice(), renderer->getDeviceContext(), worldMatrix, viewMatrix, projectionMatrix, XMFLOAT3(riverSystemPosition[0], riverSystemPosition[1], riverSystemPosition[2]));
 		}
 
+		// Clear the l-system, empty all vectors to stop it being rendered
 		if (ImGui::Button("Clear System"))
 		{
 			lSystem->ClearSystem();
@@ -363,7 +446,6 @@ void App1::gui()
 		ImGui::TreePop();
 	}
 	
-
 	// Render UI
 	ImGui::Render();
 	ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
