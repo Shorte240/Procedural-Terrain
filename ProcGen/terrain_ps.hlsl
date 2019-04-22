@@ -29,24 +29,21 @@ float4 calculateLighting(float3 lightDirection, float3 normal, float4 ldiffuse)
 
 float4 main(InputType input) : SV_TARGET
 {
-	//float4 textureColor = grassTexture.Sample(Sampler0, input.tex);
-	//float4 lightColour = (0.0f, 0.0f, 0.0f, 1.0f);
-	////float4 lightColour = 0.0f;
-
-	//lightColour += calculateLighting(-direction.xyz, input.normal, diffuse);
-
-	//lightColour += ambient;
-
-	//return saturate(lightColour) * textureColor;
-	//return saturate(lightColour);// * textureColor;
-
+	// float4s for grass, rock and slope textures
 	float4 grassColor;
 	float4 slopeColor;
 	float4 rockColor;
+
+	// slope variable used in texture setting
 	float slope;
+
+	// blend amount to determine how much to blend
 	float blendAmount;
+
+	// texture colour to hold final texture colours
 	float4 textureColor;
-	float lightIntensity;
+
+	// general lighting colour
 	float4 color = (0.0f, 0.0f, 0.0f, 1.0f);
 
 	// Sample the grass color from the texture using the sampler at this texture coordinate location.
@@ -57,7 +54,6 @@ float4 main(InputType input) : SV_TARGET
 
 	// Sample the rock color from the texture using the sampler at this texture coordinate location.
 	rockColor = rockTexture.Sample(Sampler0, input.tex);
-	//Now determine the slope for this pixel, which is just one subtracted from the Y normal.
 
 	// Calculate the slope of this point.
 	slope = 1.0f - input.normal.y;

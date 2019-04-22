@@ -478,25 +478,31 @@ bool Terrain::PointInTriangle(XMVECTOR & triV1, XMVECTOR & triV2, XMVECTOR & tri
 	XMVECTOR centrePoint = XMVector3Cross((triV3 - triV2), (point - triV2));
 	XMVECTOR centrePoint2 = XMVector3Cross((triV3 - triV2), (triV1 - triV2));
 
-	// If the x of the dot product of the two centre points is greater than 0
 	if (XMVectorGetX(XMVector3Dot(centrePoint, centrePoint2)) >= 0)
 	{
-		//
+		// Recalculate the centre points
 		centrePoint = XMVector3Cross((triV3 - triV1), (point - triV1));
 		centrePoint2 = XMVector3Cross((triV3 - triV1), (triV2 - triV1));
+
 		if (XMVectorGetX(XMVector3Dot(centrePoint, centrePoint2)) >= 0)
 		{
+			// Recalculate the centre points
 			centrePoint = XMVector3Cross((triV2 - triV1), (point - triV1));
 			centrePoint2 = XMVector3Cross((triV2 - triV1), (triV3 - triV1));
+
 			if (XMVectorGetX(XMVector3Dot(centrePoint, centrePoint2)) >= 0)
 			{
 				return true;
 			}
 			else
+			{
 				return false;
+			}
 		}
 		else
+		{
 			return false;
+		}
 	}
 	return false;
 }
@@ -505,51 +511,52 @@ void Terrain::MidpointDisplacement(ID3D11Device * device, float displacement, fl
 {
 	float d = displacement;
 
-	int lx, rx, by, ty;
+	int leftX, rightX, bottomY, topY;
 
 	// lx: x co-ord for left-hand corners
 	// rx: x co-ord for right-hand corners
 	// by: y co-ord for bottom corners
 	// ty: y co-ord for top corners
-	lx = 0;
-	rx = width - 1;
-	by = width * height - width;
-	ty = width * height - 1;
+	leftX = 0;
+	rightX = width - 1;
+	bottomY = width * height - width;
+	topY = width * height - 1;
 
 	if (currentCornerValues)
 	{
 		// Set the corners to random Y values
-		vertices[lx].position.y = vertices[lx].position.y;// bottomLeftCornerValue;// RandomIntRange(0, d);
+		vertices[leftX].position.y = vertices[leftX].position.y;// bottomLeftCornerValue;// RandomIntRange(0, d);
 		// Bottom Right							 
-		vertices[rx].position.y = vertices[rx].position.y;// bottomRightCornerValue;// RandomIntRange(0, d);
+		vertices[rightX].position.y = vertices[rightX].position.y;// bottomRightCornerValue;// RandomIntRange(0, d);
 		// Top Left								 
-		vertices[by].position.y = vertices[by].position.y;// topLeftCornerValue; //RandomIntRange(0, d);
+		vertices[bottomY].position.y = vertices[bottomY].position.y;// topLeftCornerValue; //RandomIntRange(0, d);
 		// Top Right							 
-		vertices[ty].position.y = vertices[ty].position.y;// topRightCornerValue;// RandomIntRange(0, d); 
+		vertices[topY].position.y = vertices[topY].position.y;// topRightCornerValue;// RandomIntRange(0, d); 
 	}
 	else if (setCornerValues)
 	{
 		// Set the corners to random Y values
-		vertices[lx].position.y = bottomLeftCornerValue;
+		vertices[leftX].position.y = bottomLeftCornerValue;
 		// Bottom Right							 
-		vertices[rx].position.y = bottomRightCornerValue;
+		vertices[rightX].position.y = bottomRightCornerValue;
 		// Top Left					
-		vertices[by].position.y = topLeftCornerValue;
+		vertices[bottomY].position.y = topLeftCornerValue;
 		// Top Right				
-		vertices[ty].position.y = topRightCornerValue;
+		vertices[topY].position.y = topRightCornerValue;
 	}
 	else if (randomCornerValues)
 	{
 		// Set the corners to random Y values
-		vertices[lx].position.y = RandomIntRange(0, d);
+		vertices[leftX].position.y = RandomIntRange(0, d);
 		// Bottom Right				
-		vertices[rx].position.y = RandomIntRange(0, d);
+		vertices[rightX].position.y = RandomIntRange(0, d);
 		// Top Left					
-		vertices[by].position.y = RandomIntRange(0, d);
+		vertices[bottomY].position.y = RandomIntRange(0, d);
 		// Top Right				
-		vertices[ty].position.y = RandomIntRange(0, d); 
+		vertices[topY].position.y = RandomIntRange(0, d); 
 	}
 
+	// Calculate the exponent
 	int exponent = log2(width - 1);
 
 	float chunks;
@@ -559,8 +566,8 @@ void Terrain::MidpointDisplacement(ID3D11Device * device, float displacement, fl
 	{
 		if (i < exponent)
 		{
+			// Calculate chunks and chunk width
 			chunks = pow(2, i);
-			//chunkWidth = chunks / (width);
 			chunkWidth = tileWidth / chunks;
 			for (int x = 0; x < chunks; x++)
 			{
@@ -593,9 +600,13 @@ void Terrain::SimplexNoiseFunction(ID3D11Device * device, float frequency, float
 	{
 		for (int x = 0; x < width; x++) 
 		{
-			int index;
-			index = ((width)* y) + x;
+			// Calculate index
+			int index = ((width)* y) + x;
+			
+			// Calculate the simplex noise value
 			double perlin = simplexNoise.noise(frequency * vertices[index].position.x, frequency * vertices[index].position.z);
+
+			// Alter y-height dependant on returned value
 			vertices[index].position.y += perlin * scale;
 		}
 	}
@@ -609,12 +620,11 @@ void Terrain::SimplexNoiseFunction(ID3D11Device * device, float frequency, float
 
 void Terrain::FractalBrownianMotion(ID3D11Device * device, float frequency_, float gain_, float amplitude_, float lacunarity_, int octaves_, bool ridged)
 {
-	//for each pixel, get the value total = 0.0f; frequency = 1.0f/(float)hgrid; amplitude = gain;
-	
 	for (int y = 0; y < height; y++)
 	{
 		for (int x = 0; x < width; x++)
 		{
+			// Initialise the values used for fBM
 			double simplexValue = 0.0;
 			float noiseHeight = 0;
 			float frequency = frequency_;
@@ -623,18 +633,24 @@ void Terrain::FractalBrownianMotion(ID3D11Device * device, float frequency_, flo
 			float lacunarity = lacunarity_;
 			int octaves = octaves_;
 
-			int index;
-			index = ((width)* y) + x;
+			// Calculate index
+			int index = ((width)* y) + x;
+			
 			for (int i = 0; i < octaves; i++) 
 			{
+				// Calculate x,y pos
 				float sampleX = x / frequency;
 				float sampleY = y / frequency;
 
+				// Increase simplex value
 				simplexValue += simplexNoise.noise(sampleX, sampleY);
+
+				// If not ridged, just alter height
 				if (!ridged)
 				{
 					noiseHeight += simplexValue * amplitude;
 				}
+				// If ridged, inverse the height
 				else if (ridged)
 				{
 					noiseHeight = simplexValue * amplitude;
@@ -642,9 +658,11 @@ void Terrain::FractalBrownianMotion(ID3D11Device * device, float frequency_, flo
 					noiseHeight *= -1;
 				}
 
+				// Alter amplitude and frequency
 				amplitude *= gain;
 				frequency *= lacunarity;
 			}
+			// Alter y-pos
 			vertices[index].position.y += noiseHeight;
 		}
 	}
@@ -658,23 +676,32 @@ void Terrain::FractalBrownianMotion(ID3D11Device * device, float frequency_, flo
 
 void Terrain::Voronoi(ID3D11Device * device, int regionCount)
 {
+	// Vector to hold random points around the terrain
 	std::vector<XMFLOAT3> points;
 
 	// Get set of random points across the plane
 	for (int i = 0; i < regionCount; i++)
 	{
+		// Calculate random x,z pos
 		int randX = std::rand() % (width + 1);
-		int y = i;
 		int randZ = std::rand() % (height + 1);
+
+		// Seet y = i
+		int y = i;
+
+		// Add point to points vector
 		points.push_back(XMFLOAT3(randX, y, randZ));
 	}
 
+	// Vector to hold the distances
 	std::vector<float> d;
+
 	for (float z = 0; z < height; z++)
 	{
 		for (float x = 0; x < width; x++)
 		{
-			int index;
+			// Calculate index
+			int index = ((width)* z) + x;
 
 			// Check the distance between this point and set of points
 			for (int i = 0; i < regionCount; i++)
@@ -687,9 +714,8 @@ void Terrain::Voronoi(ID3D11Device * device, int regionCount)
 
 			// Find the smallest distance
 			std::vector<float>::iterator result = std::min_element(std::begin(d), std::end(d));
-
-			index = ((width)* z) + x;
-
+			
+			// Alter y-pos based on distances
 			vertices[index].position.y = points[std::distance(std::begin(d), result)].y;
 			d.clear();
 		}
@@ -770,23 +796,18 @@ void Terrain::Pick(ID3D11Device * device, XMVECTOR pickRayInWorldSpacePos, XMVEC
 			//Call function to check if point is in the triangle
 			if (PointInTriangle(tri1V1, tri1V2, tri1V3, pointInPlane))
 			{
-				//Return the distance to the hit, so you can check all the other pickable objects in your scene
-				//and choose whichever object is closest to the camera
-				
-				int point1Index, point2Index, point3Index;
-				point1Index = indices2[(i * 3) + 0];
-				point2Index = indices2[(i * 3) + 1];
-				point3Index = indices2[(i * 3) + 2];
-				
+				// Store the clicked point in plane as float 3
 				XMFLOAT3 p;
 				XMStoreFloat3(&p, pointInPlane);
 
+				// Do circle algorithm based on clicked point in plane
 				CircleAlgorithm(device, displacement, p, diameter);
 				break;
 			}
 		}
 	}
 
+	// Delete the secondary indices array
 	delete[] indices2;
 	indices2 = 0;
 

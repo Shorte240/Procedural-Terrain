@@ -39,21 +39,13 @@ OutputType main(InputType input)
 
 	float4 new_pos = input.position;
 
-
-	//// offset position based on sine wave
-	//input.position.x = input.position.x + (height * length(input.normal) * (sin(((input.position.z * frequency) + (time * speed)))));
+	// offset position based on sine wave
 	new_pos.y = new_pos.y + (height * length(input.normal) * (sin(((new_pos.z * frequency) + (time * speed)))));
-	//new_pos.y = sin(new_pos.x + time);
-	//input.position.z = input.position.z + (height * length(input.normal) * (sin(((input.position.y * frequency) + (time * speed)))));
 	new_pos.w /= 2;
 
 	//// modify normals
 	/*input.normal.x = 1 - cos(input.position.x + time);
 	input.normal.y = abs(cos(input.position.x + time));*/
-
-	// Sample the texture. Use colour to alter height of plane.
-	/*float4 textureColour = heightTex.SampleLevel(sampler0, input.tex, 0, 0);
-	input.position.y = textureColour.r * height;*/
 
 	// Calculate the position of the vertex against the world, view, and projection matrices.
 	output.position = mul(new_pos, worldMatrix);

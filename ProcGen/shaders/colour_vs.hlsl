@@ -26,10 +26,6 @@ OutputType main(InputType input)
 
 	float4 new_pos = input.position;
 
-	/*new_pos.x *= 2;
-	new_pos.y *= 2;
-	new_pos.z *= 2;*/
-
 	new_pos.w /= 2;
 
 	// Calculate the position of the vertex against the world, view, and projection matrices.

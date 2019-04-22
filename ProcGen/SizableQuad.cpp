@@ -1,29 +1,31 @@
+// SizeableQuad.cpp
+// Used in generation of the l-system
 #include "SizableQuad.h"
-
 
 SizableQuad::SizableQuad(ID3D11Device * device, ID3D11DeviceContext * deviceContext, float width_, float height_, XMFLOAT2 quadScale)
 {
+	// Set width, height and scale based on passed in parameters
 	width = width_;
 	height = height_;
-	size_ = quadScale;
+	scale_ = quadScale;
 
 	// Vertex count is width and height
 	vertexCount = height * width;
 
+	// Initialise vertices based on vertex count
 	vertices = new VertexType[vertexCount];
 
+	// Initialise the buffers
 	initBuffers(device);
-
-	// Pass in pos of last top of quad
-	// Base pos from bottom vertex off of passed in pos
-	/// Decrease width by current point in shape
-	/// Translate by height of next quad
 }
 
 SizableQuad::~SizableQuad()
 {
 	// Run parent deconstructor
 	BaseMesh::~BaseMesh();
+
+	delete[] vertices;
+	vertices = 0;
 }
 
 
@@ -35,7 +37,7 @@ void SizableQuad::initBuffers(ID3D11Device * device)
 	int quad_z = height - 1;
 
 	// Position offsets
-	XMFLOAT3 topLeft = XMFLOAT3(-(float)quad_x*size_.x, 0.0f, (float)quad_z*size_.y);
+	XMFLOAT3 topLeft = XMFLOAT3(-(float)quad_x*scale_.x, 0.0f, (float)quad_z*scale_.y);
 
 	// Create all the vers based on the top left position 
 	int index = 0;
@@ -44,10 +46,10 @@ void SizableQuad::initBuffers(ID3D11Device * device)
 	{
 		for (int w = 0; w < width; w++)
 		{
-
 			VertexType vert;
 
-			vert.position = XMFLOAT3(topLeft.x + ((float)w * size_.x), 0.0f, topLeft.z - ((float)l * size_.y));
+			// Set position and normal of quad
+			vert.position = XMFLOAT3(topLeft.x + ((float)w * scale_.x), 0.0f, topLeft.z - ((float)l * scale_.y));
 			vert.normal = XMFLOAT3(0.0f, 1.0f, 0.0f);
 
 			// Calculate the texture coordinate
@@ -63,7 +65,6 @@ void SizableQuad::initBuffers(ID3D11Device * device)
 	}
 
 	D3D11_SUBRESOURCE_DATA vertexData, indexData;
-
 	
 	// Total quads
 	int total_quads = quad_x * quad_z;
@@ -92,7 +93,7 @@ void SizableQuad::initBuffers(ID3D11Device * device)
 				indices[quadIndex + 4] = vertRef + width + 1;  // BottomRight
 				indices[quadIndex + 5] = vertRef + 1;		// TopRight
 
-															// It's the quad combined with the number of verts wide
+				// It's the quad combined with the number of verts wide
 				vertRef++;
 
 				if (vertRef%lineCheck == 0)
@@ -115,7 +116,7 @@ void SizableQuad::initBuffers(ID3D11Device * device)
 				indices[quadIndex + 4] = vertRef + width;		// BottomLeft
 				indices[quadIndex + 5] = vertRef + width + 1;  // BottomRight
 
-															   // It's the quad combined with the number of verts wide
+				// It's the quad combined with the number of verts wide
 				vertRef++;
 
 				if (vertRef%lineCheck == 0)

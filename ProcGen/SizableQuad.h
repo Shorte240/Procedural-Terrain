@@ -1,3 +1,5 @@
+// SizeableQuad.h
+// Used in generation of the l-system
 #pragma once
 
 #include "DXF.h"
@@ -14,7 +16,12 @@ public:
 protected:
 	void initBuffers(ID3D11Device* device);
 
+	// Vertices
 	VertexType* vertices;
-	XMFLOAT2 size_;
+
+	// Scale of the quad
+	XMFLOAT2 scale_;
+
+	// Dimensions of the quad
 	float width, height;
 };
