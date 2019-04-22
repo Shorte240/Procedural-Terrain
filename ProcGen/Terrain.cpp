@@ -4,26 +4,37 @@
 
 Terrain::Terrain(ID3D11Device* device, ID3D11DeviceContext* deviceContext, int _width, int _height, XMFLOAT2 quadScale)
 {
+	// Set width, height and scale of terrain
 	width = _width;
 	height = _height;
-	size_ = quadScale;
+	scale_ = quadScale;
 
+	// Set the amount of times the texture will repeat
 	textureRepeatAmount = 32;
 
 	// Vertex count is width and height
 	vertexCount = height * width;
 
+	// Initialise vertices using vertex count
 	vertices = new VertexType[vertexCount];
 
+	// Generate a flat plane
 	GeneratePlane(device);
 }
 
 Terrain::~Terrain()
 {
-	delete[] vertices;
-	vertices = 0;
 	// Run parent deconstructor
 	BaseMesh::~BaseMesh();
+
+	// Delete the vertices array
+	delete[] vertices;
+	vertices = 0;
+
+	// Delete the seconday indices array
+	// used in terrain picking
+	delete[] indices2;
+	indices2 = 0;
 }
 
 void Terrain::initBuffers(ID3D11Device* device)
@@ -40,12 +51,15 @@ void Terrain::initBuffers(ID3D11Device* device)
 	unsigned long* indices = new unsigned long[total_quads * 6];
 	indices2 = new unsigned long[total_quads * 6];
 
+	// Set the index count
 	indexCount = total_quads * 6;
 
 	// for all the quads to be rendered
 	int quadIndex = 0;
 	int vertRef = 0;
 	int lineCheck = quad_x;
+	// boolean to trick if tri has been flipped
+	// to make the quilt patterened terrain
 	bool flipped = false;
 	for (int qz = 0; qz < quad_z; qz++)
 	{
@@ -105,6 +119,7 @@ void Terrain::initBuffers(ID3D11Device* device)
 		}
 	}
 
+	// Initialise secondary indices array for terrain picking
 	for (int i = 0; i < indexCount; i++)
 	{
 		indices2[i] = indices[i];
@@ -132,7 +147,7 @@ void Terrain::GeneratePlane(ID3D11Device* device)
 	int quad_z = height - 1;
 
 	// Position offsets
-	XMFLOAT3 topLeft = XMFLOAT3(-(float)quad_x*size_.x / 2.0f, 0.0f, (float)quad_z*size_.y / 2.0f);
+	XMFLOAT3 topLeft = XMFLOAT3(-(float)quad_x*scale_.x / 2.0f, 0.0f, (float)quad_z*scale_.y / 2.0f);
 
 	// Create all the vers based on the top left position 
 	int index = 0;
@@ -143,7 +158,8 @@ void Terrain::GeneratePlane(ID3D11Device* device)
 		{
 			VertexType vert;
 
-			vert.position = XMFLOAT3(topLeft.x + ((float)w * size_.x), 0.0f, topLeft.z - ((float)l * size_.y));
+			// Set position and normal
+			vert.position = XMFLOAT3(topLeft.x + ((float)w * scale_.x), 0.0f, topLeft.z - ((float)l * scale_.y));
 			vert.normal = XMFLOAT3(0.0f, 1.0f, 0.0f);
 
 			// Calculate the texture coordinate
@@ -158,6 +174,7 @@ void Terrain::GeneratePlane(ID3D11Device* device)
 		}
 	}
 
+	// Calculate normals of the terrain
 	CalculateNormals();
 
 	// Initialize the vertex and index buffer that hold the geometry for the terrain.
@@ -184,16 +201,20 @@ void Terrain::GenerateHeightMap(ID3D11Device * device)
 	{
 		for (int x = 0; x < width; x++)
 		{
-			int vertexIdentity = ((width) * y) + x;
+			// Calculate index
+			int index = ((width) * y) + x;
+			// Calculate new random y-pos
 			float newYPos = RandomIntRange(6, 12);
 
-			// Load the vertex array with data - setting the top left position of every patch
-			vertices[vertexIdentity].position.y += newYPos;
+			// Set the new y-pos
+			vertices[index].position.y += newYPos;
 		}
 	}
 
+	// Calculate normals of the terrain
 	CalculateNormals();
 
+	// Initialize the vertex and index buffer that hold the geometry for the terrain.
 	initBuffers(device);
 }
 
@@ -258,14 +279,17 @@ void Terrain::SmoothVertices(ID3D11Device * device)
 				adjacentSections++;
 			}
 
+			// Smoothe the y-pos based on calculated sections and ajacent sections
 			vertices[index].position.x = vertices[index].position.x;
 			vertices[index].position.y = (vertices[index].position.y + (sectionsTotal / adjacentSections)) * 0.5f;
 			vertices[index].position.z = vertices[index].position.z;
 		}
 	}
 
+	// Calculate normals of the terrain
 	CalculateNormals();
 
+	// Initialize the vertex and index buffer that hold the geometry for the terrain.
 	initBuffers(device);
 }
 
@@ -273,45 +297,51 @@ void Terrain::Faulting(ID3D11Device * device, float displacement)
 {
 	for (int i = 0; i < 100; i++)
 	{
-		float v = std::rand();
-		float a = sin(v);
-		float b = cos(v);
-		float d = sqrt((width * width) + height * height);
+		// Calculate random number
+		float randomNumber = std::rand();
+		// Calculate sin/cos of random number
+		float randomSin = sin(randomNumber);
+		float randomCos = cos(randomNumber);
+		// Calculate distance of terrain
+		float distance = sqrt((width * width) + height * height);
 		// rand() / RAND_MAX gives a random number between 0 & 1
-		// therefore cwill be a random number between -d/2 and d/2
-		float c = ((float)std::rand() / RAND_MAX) * d - d / 2.0f;
+		// therefore length will be a random number between -distance/2 and distance/2
+		float length = ((float)std::rand() / RAND_MAX) * distance - distance / 2.0f;
 
 		for (int z = 0; z < height; z++)
 		{
 			for (int x = 0; x < width; x++)
 			{
-				int index;
+				int index = ((width)* z) + x;;
 
-				if ((a * z) + (b * x) - c > 0)
+				// If point is on one side of the dividing line
+				if ((randomSin * z) + (randomCos * x) - length > 0)
 				{
-					index = ((width) * z) + x;
-
+					// Increase height
 					vertices[index].position.y += displacement;
 				}
 				else
 				{
-					index = ((width) * z) + x;
-
+					// Decrease height
 					vertices[index].position.y -= displacement;
 				}
 			}
 		}
 	}
 
+	// Calculate normals of the terrain
 	CalculateNormals();
 
+	// Initialize the vertex and index buffer that hold the geometry for the terrain.
 	initBuffers(device);
 }
 
-void Terrain::CircleAlgorithm(ID3D11Device * device, float displacement)
+void Terrain::RandomCircleAlgorithm(ID3D11Device * device, float displacement)
 {
 	for (int i = 0; i < 100; i++)
 	{
+		// Calculate random x and z positions
+		// Calculate random circle size
 		int randX = std::rand() % (width + 1);
 		int randZ = std::rand() % (height + 1);
 		int randCircSize = std::rand() % ((width + height) / 10); // circle diameter
@@ -320,24 +350,29 @@ void Terrain::CircleAlgorithm(ID3D11Device * device, float displacement)
 		{
 			for (int x = 0; x < width; x++)
 			{
-				int index;
+				// Calculate index
+				int index = ((width)* z) + x;
 
-				float pd = sqrt((randX - x)*(randX - x) + (randZ - z)*(randZ - z)) * 2.0f / randCircSize;	// pd = distFromCircle*2/size
+				// pd = distFromCircle*2/size
+				float pd = sqrt((randX - x)*(randX - x) + (randZ - z)*(randZ - z)) * 2.0f / randCircSize;
 
-				if (fabs(pd) <= 1.0f)	// if vertex in circle, displace upwards
+				// If vertex in circle, displace upwards
+				if (fabs(pd) <= 1.0f)
 				{
-					index = ((width) * z) + x;
-
+					// Calculate the height to displace by
 					float diff = displacement / 2.0f + cos(pd*3.14)*displacement / 2.0f;
 
+					// Increase y-pos of vertices
 					vertices[index].position.y += diff;
 				}
 			}
 		}
 	}
 
+	// Calculate normals of the terrain
 	CalculateNormals();
 
+	// Initialize the vertex and index buffer that hold the geometry for the terrain.
 	initBuffers(device);
 }
 
@@ -347,22 +382,26 @@ void Terrain::CircleAlgorithm(ID3D11Device * device, float displacement, XMFLOAT
 	{
 		for (int x = 0; x < width; x++)
 		{
-			int index;
+			// Calculate index
+			int index = ((width)* z) + x;
 
-			index = ((width)* z) + x;
-
+			// pd = (distance between vertex position and clicked point)*2/size
 			float pd = sqrt((point.x - vertices[index].position.x)*(point.x - vertices[index].position.x) + (point.z - vertices[index].position.z)*(point.z - vertices[index].position.z)) * 2.0f / diameter;	// pd = distFromCircle*2/size
-
-			if (fabs(pd) <= 1.0f)	// if vertex in circle, displace upwards
+			
+			// if vertex in circle, displace upwards
+			if (fabs(pd) <= 1.0f)
 			{
+				// Calculate the height to displace by
 				float diff = displacement / 2.0f + cos(pd*3.14)*displacement / 2.0f;
 
+				// Increase y-pos of vertices
 				vertices[index].position.y += diff;
 			}
 		}
 	}
 }
 
+// Midpoint displacement functions
 float Terrain::jitter(XMFLOAT3 & point, float d)
 {
 	return point.y += RandomIntRange(0, d);
@@ -383,28 +422,34 @@ float Terrain::average4(XMFLOAT3 & point, XMFLOAT3 & point2, XMFLOAT3 & point3, 
 	return ((point.y + point2.y + point3.y + point4.y) / 4.0f);
 }
 
-void Terrain::mpdDisplace(int lx, int rx, int by, int ty, float spread)
+void Terrain::mpdDisplace(int leftX, int rightX, int bottomY, int topY, float spread)
 {
 	// lx: x co-ord for left-hand corners
 	// rx: x co-ord for right-hand corners
 	// by: y co-ord for bottom corners
 	// ty: y co-ord for top corners
 
-	int cx, cy;
+	// Centre position
+	int centreX, centerY;
 
-	cx = midpoint(lx, rx);
-	cy = midpoint(by, ty);
+	// Calculate centre midpoint
+	centreX = midpoint(leftX, rightX);
+	centerY = midpoint(bottomY, topY);
 
-	int cmx;
+	// Midpoint of the midpoint x
+	int centerMidpointX;
 
-	cmx = midpoint(cx, cy);
+	// Calculate midpoint of the midpoint x
+	centerMidpointX = midpoint(centreX, centerY);
 
+	// Get the bottom left, bottom right, top left and top right vertex positions
 	XMFLOAT3 bottomLeft, bottomRight, topLeft, topRight;
-	bottomLeft = vertices[lx + (by * width)].position;
-	bottomRight = vertices[rx + (by * width)].position;
-	topLeft = vertices[lx + (ty * width)].position;
-	topRight = vertices[rx + (ty * width)].position;
+	bottomLeft = vertices[leftX + (bottomY * width)].position;
+	bottomRight = vertices[rightX + (bottomY * width)].position;
+	topLeft = vertices[leftX + (topY * width)].position;
+	topRight = vertices[rightX + (topY * width)].position;
 
+	// Average all the heights of the positions
 	XMFLOAT3 top, left, bottom, right, centre;
 	top.y = average2(topLeft, topRight);
 	left.y = average2(bottomLeft, topLeft);
@@ -412,13 +457,16 @@ void Terrain::mpdDisplace(int lx, int rx, int by, int ty, float spread)
 	right.y = average2(bottomRight, topRight);
 	centre.y = average4(top, left, bottom, right);
 
-	vertices[cx + (cy*width)].position.y = jitter(centre, spread);
+	// Set the centre y-pos
+	vertices[centreX + (centerY*width)].position.y = jitter(centre, spread);
 
-	vertices[lx + (cy*width)].position.y = jitter(left, spread);
-	vertices[rx + (cy*width)].position.y = jitter(right, spread);
+	// Set the left and right y-pos
+	vertices[leftX + (centerY*width)].position.y = jitter(left, spread);
+	vertices[rightX + (centerY*width)].position.y = jitter(right, spread);
 
-	vertices[cx + (by*width)].position.y = jitter(bottom, spread);
-	vertices[cx + (ty*width)].position.y = jitter(top, spread);
+	// Set the bottom and top y-pos
+	vertices[centreX + (bottomY*width)].position.y = jitter(bottom, spread);
+	vertices[centreX + (topY*width)].position.y = jitter(top, spread);
 }
 
 bool Terrain::PointInTriangle(XMVECTOR & triV1, XMVECTOR & triV2, XMVECTOR & triV3, XMVECTOR & point)
@@ -426,17 +474,21 @@ bool Terrain::PointInTriangle(XMVECTOR & triV1, XMVECTOR & triV2, XMVECTOR & tri
 	//To find out if the point is inside the triangle, we will check to see if the point
 	//is on the correct side of each of the triangles edges.
 
-	XMVECTOR cp1 = XMVector3Cross((triV3 - triV2), (point - triV2));
-	XMVECTOR cp2 = XMVector3Cross((triV3 - triV2), (triV1 - triV2));
-	if (XMVectorGetX(XMVector3Dot(cp1, cp2)) >= 0)
+	// Calculate the centre points of all the tris and the given point
+	XMVECTOR centrePoint = XMVector3Cross((triV3 - triV2), (point - triV2));
+	XMVECTOR centrePoint2 = XMVector3Cross((triV3 - triV2), (triV1 - triV2));
+
+	// If the x of the dot product of the two centre points is greater than 0
+	if (XMVectorGetX(XMVector3Dot(centrePoint, centrePoint2)) >= 0)
 	{
-		cp1 = XMVector3Cross((triV3 - triV1), (point - triV1));
-		cp2 = XMVector3Cross((triV3 - triV1), (triV2 - triV1));
-		if (XMVectorGetX(XMVector3Dot(cp1, cp2)) >= 0)
+		//
+		centrePoint = XMVector3Cross((triV3 - triV1), (point - triV1));
+		centrePoint2 = XMVector3Cross((triV3 - triV1), (triV2 - triV1));
+		if (XMVectorGetX(XMVector3Dot(centrePoint, centrePoint2)) >= 0)
 		{
-			cp1 = XMVector3Cross((triV2 - triV1), (point - triV1));
-			cp2 = XMVector3Cross((triV2 - triV1), (triV3 - triV1));
-			if (XMVectorGetX(XMVector3Dot(cp1, cp2)) >= 0)
+			centrePoint = XMVector3Cross((triV2 - triV1), (point - triV1));
+			centrePoint2 = XMVector3Cross((triV2 - triV1), (triV3 - triV1));
+			if (XMVectorGetX(XMVector3Dot(centrePoint, centrePoint2)) >= 0)
 			{
 				return true;
 			}
@@ -528,8 +580,10 @@ void Terrain::MidpointDisplacement(ID3D11Device * device, float displacement, fl
 		}
 	}
 
+	// Calculate normals of the terrain
 	CalculateNormals();
 
+	// Initialize the vertex and index buffer that hold the geometry for the terrain.
 	initBuffers(device);
 }
 
@@ -546,8 +600,10 @@ void Terrain::SimplexNoiseFunction(ID3D11Device * device, float frequency, float
 		}
 	}
 
+	// Calculate normals of the terrain
 	CalculateNormals();
 
+	// Initialize the vertex and index buffer that hold the geometry for the terrain.
 	initBuffers(device);
 }
 
@@ -593,8 +649,10 @@ void Terrain::FractalBrownianMotion(ID3D11Device * device, float frequency_, flo
 		}
 	}
 
+	// Calculate normals of the terrain
 	CalculateNormals();
 
+	// Initialize the vertex and index buffer that hold the geometry for the terrain.
 	initBuffers(device);
 }
 
@@ -637,8 +695,10 @@ void Terrain::Voronoi(ID3D11Device * device, int regionCount)
 		}
 	}
 
+	// Calculate normals of the terrain
 	CalculateNormals();
 
+	// Initialize the vertex and index buffer that hold the geometry for the terrain.
 	initBuffers(device);
 }
 
@@ -727,11 +787,13 @@ void Terrain::Pick(ID3D11Device * device, XMVECTOR pickRayInWorldSpacePos, XMVEC
 		}
 	}
 
-	delete indices2;
-	indices2 = NULL;
+	delete[] indices2;
+	indices2 = 0;
 
+	// Calculate normals of the terrain
 	CalculateNormals();
 
+	// Initialize the vertex and index buffer that hold the geometry for the terrain.
 	initBuffers(device);
 }
 

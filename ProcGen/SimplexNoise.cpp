@@ -17,37 +17,6 @@ SimplexNoise::~SimplexNoise()
 
 double SimplexNoise::noise(double xin, double yin)
 {
-	//int X, Y, Z;
-	//X = (int)fastfloor(x) & 255;	// FIND UNIT CUBE THAT
-	//Y = (int)fastfloor(y) & 255;	// CONTAINS POINT.
-	//Z = (int)fastfloor(z) & 255;
-
-	//x -= fastfloor(x);				// FIND RELATIVE X,Y,Z
-	//y -= fastfloor(y);				// OF POINT IN CUBE.
-	//z -= fastfloor(z);
-
-	//double u, v, w;
-	//u = fade(x);				// COMPUTE FADE CURVES
-	//v = fade(y);				// FOR EACH OF X,Y,Z.
-	//w = fade(z);
-
-	//int A, AA, AB, B, BA, BB;
-	//A = perm[X] + Y;				// HASH COORDINATES OF
-	//AA = perm[A] + Z;				// THE 8 CUBE CORNERS,
-	//AB = perm[A + 1] + Z;
-	//B = perm[X + 1] + Y;
-	//BA = perm[B] + Z;
-	//BB = perm[B + 1] + Z;
-
-	//return lerp(w, lerp(v, lerp(u, grad(perm[AA], x, y, z),	// AND ADD
-	//	grad(perm[BA], x - 1, y, z)),							// BLENDED
-	//	lerp(u, grad(perm[AB], x, y - 1, z),					// RESULTS
-	//		grad(perm[BB], x - 1, y - 1, z))),					// FROM 8
-	//	lerp(v, lerp(u, grad(perm[AA + 1], x, y, z - 1),		// CORNERS
-	//		grad(perm[BA + 1], x - 1, y, z - 1)),				// OF CUBE
-	//		lerp(u, grad(perm[AB + 1], x, y - 1, z - 1),
-	//			grad(perm[BB + 1], x - 1, y - 1, z - 1))));
-
 	double n0, n1, n2; // Noise contributions from the three corners
 	// Skew the input space to determine which simplex cell we're in
 	double F2 = 0.5*(sqrt(3.0) - 1.0);

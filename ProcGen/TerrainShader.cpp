@@ -10,11 +10,13 @@ TerrainShader::TerrainShader(ID3D11Device* device, HWND hwnd) : BaseShader(devic
 
 TerrainShader::~TerrainShader()
 {
+	// Release the sample state.
 	if (sampleState)
 	{
 		sampleState->Release();
 		sampleState = 0;
 	}
+	// Release the matrix buffer.
 	if (matrixBuffer)
 	{
 		matrixBuffer->Release();
@@ -98,7 +100,6 @@ void TerrainShader::setShaderParameters(ID3D11DeviceContext* deviceContext, cons
 	deviceContext->VSSetConstantBuffers(0, 1, &matrixBuffer);
 
 	// Passing in light info
-
 	LightBufferType* lightPtr;
 	deviceContext->Map(lightBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
 	lightPtr = (LightBufferType*)mappedResource.pData;

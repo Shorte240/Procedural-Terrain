@@ -280,7 +280,7 @@ void App1::gui()
 	// Perform the circle algorithm for height displacement on the terrain
 	if (ImGui::Button("Circle Algorithm")) 
 	{
-		terrain->CircleAlgorithm(renderer->getDevice(), displacementHeight);
+		terrain->RandomCircleAlgorithm(renderer->getDevice(), displacementHeight);
 	}
 
 	// Displace the terrain height via midpoint displacement

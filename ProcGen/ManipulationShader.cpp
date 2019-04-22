@@ -1,3 +1,5 @@
+// Manipulation shader.cpp
+// Used to alter the vertices of a given shape
 #include "ManipulationShader.h"
 
 ManipulationShader::ManipulationShader(ID3D11Device* device, HWND hwnd) : BaseShader(device, hwnd)
@@ -39,6 +41,13 @@ ManipulationShader::~ManipulationShader()
 	{
 		lightBuffer->Release();
 		lightBuffer = 0;
+	}
+
+	// Release the time constant buffer.
+	if (timeBuffer)
+	{
+		timeBuffer->Release();
+		timeBuffer = 0;
 	}
 
 	//Release base shader components
@@ -132,7 +141,7 @@ void ManipulationShader::setShaderParameters(ID3D11DeviceContext * deviceContext
 	deviceContext->Unmap(matrixBuffer, 0);
 	deviceContext->VSSetConstantBuffers(0, 1, &matrixBuffer);
 
-	// Send time data to pixel shader
+	// Send time data to vertex shader
 	TimeBufferType* timePtr;
 	deviceContext->Map(timeBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);
 	timePtr = (TimeBufferType*)mappedResource.pData;
@@ -143,7 +152,7 @@ void ManipulationShader::setShaderParameters(ID3D11DeviceContext * deviceContext
 	deviceContext->Unmap(timeBuffer, 0);
 	deviceContext->VSSetConstantBuffers(1, 1, &timeBuffer);
 
-	//Additional
+	// Additional
 	// Send light data to pixel shader
 	LightBufferType* lightPtr;
 	deviceContext->Map(lightBuffer, 0, D3D11_MAP_WRITE_DISCARD, 0, &mappedResource);

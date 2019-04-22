@@ -13,22 +13,32 @@ public:
 	double noise(double xin, double yin);
 
 private:
+	// Fast floor function
 	int fastfloor(double x);
+	// Fade function
 	double fade(double t);
+	// Lerp function
 	double lerp(double t, double a, double b);
+	// Gradient function
 	double grad(int hash, double x, double y, double z);
-	double dot(int g[], double x, double y) {
+	// Dot product functions
+	double dot(int g[], double x, double y) 
+	{
 		return g[0] * x + g[1] * y;
 	}
-	double dot(int g[], double x, double y, double z) {
+	double dot(int g[], double x, double y, double z) 
+	{
 		return g[0] * x + g[1] * y + g[2] * z;
 	}
-	double dot(int g[], double x, double y, double z, double w) {
+	double dot(int g[], double x, double y, double z, double w) 
+	{
 		return g[0] * x + g[1] * y + g[2] * z + g[3] * w;
 	}
 
+	// Permutation array
 	int perm[512];
 
+	// Array to hold values used in simplex noise
 	const int p[256] = { 151,160,137,91,90,15,
 		131,13,201,95,96,53,194,233,7,225,140,36,103,30,69,142,8,99,37,240,21,10,23,
 		190, 6,148,247,120,234,75,0,26,197,62,94,252,219,203,117,35,11,32,57,177,33,
@@ -44,6 +54,7 @@ private:
 		138,236,205,93,222,114,67,29,24,72,243,141,128,195,78,66,215,61,156,180
 	};
 
+	// Grad3 values
 	int grad3[12][3] = { {1,1,0},{-1,1,0},{1,-1,0},{-1,-1,0},
 		{1,0,1},{-1,0,1},{1,0,-1},{-1,0,-1},
 		{0,1,1},{0,-1,1},{0,1,-1},{0,-1,-1} 

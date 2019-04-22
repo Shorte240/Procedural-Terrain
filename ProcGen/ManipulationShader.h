@@ -1,3 +1,5 @@
+// Manipulation shader.h
+// Used to alter the vertices of a given shape
 #pragma once
 
 #include "DXF.h"
@@ -34,10 +36,14 @@ private:
 	void initShader(WCHAR*, WCHAR*);
 
 private:
+	// Matrix buffer
 	ID3D11Buffer * matrixBuffer;
+	// Sample states
 	ID3D11SamplerState* sampleState;
 	ID3D11SamplerState* sampleState2;
+	// Light buffer
 	ID3D11Buffer* lightBuffer;
+	// Time buffer
 	ID3D11Buffer* timeBuffer;
 };
 

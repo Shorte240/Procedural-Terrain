@@ -1,4 +1,4 @@
-// texture shader.cpp
+// colour shader.cpp
 #include "colourshader.h"
 
 
