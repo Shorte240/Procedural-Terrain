@@ -1,5 +1,7 @@
 // SimplexNoise.h
 // Class used to implement the Simplex Noise function.
+// Functions adapted from http://staffwww.itn.liu.se/~stegu/simplexnoise/simplexnoise.pdf
+
 #pragma once
 
 #include <cmath>

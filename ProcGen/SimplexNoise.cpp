@@ -1,5 +1,6 @@
 // SimplexNoise.cpp
 // Contains functions to execute Simplex Noise
+// Functions adapted from http://staffwww.itn.liu.se/~stegu/simplexnoise/simplexnoise.pdf
 
 #include "SimplexNoise.h"
 

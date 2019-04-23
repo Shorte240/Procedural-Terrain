@@ -18,8 +18,8 @@ LSystem::LSystem(ID3D11Device* device, HWND hwnd)
 	// Initialise the variables used in the wave manipulation
 	// of the quads in the l-system
 	waveParams.elapsedTime = 0.0f;
-	waveParams.height = 1.0f;
-	waveParams.frequency = 1.0f;
+	waveParams.height = 0.4f;
+	waveParams.frequency = 1.4f;
 	waveParams.speed = 1.0f;
 
 	// Add rules for the l-system to follow

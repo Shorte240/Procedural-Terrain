@@ -402,6 +402,7 @@ void Terrain::CircleAlgorithm(ID3D11Device * device, float displacement, XMFLOAT
 }
 
 // Midpoint displacement functions
+// Adapted from http://stevelosh.com/blog/2016/02/midpoint-displacement/
 float Terrain::jitter(XMFLOAT3 & point, float d)
 {
 	return point.y += RandomIntRange(0, d);
@@ -424,6 +425,8 @@ float Terrain::average4(XMFLOAT3 & point, XMFLOAT3 & point2, XMFLOAT3 & point3, 
 
 void Terrain::mpdDisplace(int leftX, int rightX, int bottomY, int topY, float spread)
 {
+	// Functions adapted from http://stevelosh.com/blog/2016/02/midpoint-displacement/
+
 	// lx: x co-ord for left-hand corners
 	// rx: x co-ord for right-hand corners
 	// by: y co-ord for bottom corners
@@ -469,46 +472,10 @@ void Terrain::mpdDisplace(int leftX, int rightX, int bottomY, int topY, float sp
 	vertices[centreX + (topY*width)].position.y = jitter(top, spread);
 }
 
-bool Terrain::PointInTriangle(XMVECTOR & triV1, XMVECTOR & triV2, XMVECTOR & triV3, XMVECTOR & point)
-{
-	//To find out if the point is inside the triangle, we will check to see if the point
-	//is on the correct side of each of the triangles edges.
-
-	// Calculate the centre points of all the tris and the given point
-	XMVECTOR centrePoint = XMVector3Cross((triV3 - triV2), (point - triV2));
-	XMVECTOR centrePoint2 = XMVector3Cross((triV3 - triV2), (triV1 - triV2));
-
-	if (XMVectorGetX(XMVector3Dot(centrePoint, centrePoint2)) >= 0)
-	{
-		// Recalculate the centre points
-		centrePoint = XMVector3Cross((triV3 - triV1), (point - triV1));
-		centrePoint2 = XMVector3Cross((triV3 - triV1), (triV2 - triV1));
-
-		if (XMVectorGetX(XMVector3Dot(centrePoint, centrePoint2)) >= 0)
-		{
-			// Recalculate the centre points
-			centrePoint = XMVector3Cross((triV2 - triV1), (point - triV1));
-			centrePoint2 = XMVector3Cross((triV2 - triV1), (triV3 - triV1));
-
-			if (XMVectorGetX(XMVector3Dot(centrePoint, centrePoint2)) >= 0)
-			{
-				return true;
-			}
-			else
-			{
-				return false;
-			}
-		}
-		else
-		{
-			return false;
-		}
-	}
-	return false;
-}
-
 void Terrain::MidpointDisplacement(ID3D11Device * device, float displacement, float bottomLeftCornerValue, float bottomRightCornerValue, float topLeftCornerValue, float topRightCornerValue, bool currentCornerValues, bool setCornerValues, bool randomCornerValues)
 {
+	// Functions adapted from http://stevelosh.com/blog/2016/02/midpoint-displacement/
+
 	float d = displacement;
 
 	int leftX, rightX, bottomY, topY;
@@ -596,6 +563,8 @@ void Terrain::MidpointDisplacement(ID3D11Device * device, float displacement, fl
 
 void Terrain::SimplexNoiseFunction(ID3D11Device * device, float frequency, float scale)
 {
+	// Functions adapted from http://staffwww.itn.liu.se/~stegu/simplexnoise/simplexnoise.pdf
+
 	for (int y = 0; y < height; y++) 
 	{
 		for (int x = 0; x < width; x++) 
@@ -620,30 +589,29 @@ void Terrain::SimplexNoiseFunction(ID3D11Device * device, float frequency, float
 
 void Terrain::FractalBrownianMotion(ID3D11Device * device, float frequency_, float gain_, float amplitude_, float lacunarity_, int octaves_, bool ridged)
 {
-	for (int y = 0; y < height; y++)
-	{
-		for (int x = 0; x < width; x++)
-		{
-			// Initialise the values used for fBM
-			double simplexValue = 0.0;
-			float noiseHeight = 0;
-			float frequency = frequency_;
-			float gain = gain_;
-			float amplitude = amplitude_;
-			float lacunarity = lacunarity_;
-			int octaves = octaves_;
+	// Initialise the values used for fBM
+	double simplexValue = 0.0;
+	float noiseHeight = 0;
+	float frequency = frequency_;
+	float gain = gain_;
+	float amplitude = amplitude_;
+	float lacunarity = lacunarity_;
+	int octaves = octaves_;
 
-			// Calculate index
-			int index = ((width)* y) + x;
-			
-			for (int i = 0; i < octaves; i++) 
+	for (int i = 0; i < octaves; i++)
+	{
+		for (int y = 0; y < height; y++)
+		{
+			for (int x = 0; x < width; x++)
 			{
-				// Calculate x,y pos
-				float sampleX = x / frequency;
-				float sampleY = y / frequency;
+				simplexValue = 0.0;
+				noiseHeight = 0;
+
+				// Calculate index
+				int index = ((width)* y) + x;
 
 				// Increase simplex value
-				simplexValue += simplexNoise.noise(sampleX, sampleY);
+				simplexValue += simplexNoise.noise(frequency * vertices[index].position.x, frequency * vertices[index].position.z);
 
 				// If not ridged, just alter height
 				if (!ridged)
@@ -658,13 +626,13 @@ void Terrain::FractalBrownianMotion(ID3D11Device * device, float frequency_, flo
 					noiseHeight *= -1;
 				}
 
-				// Alter amplitude and frequency
-				amplitude *= gain;
-				frequency *= lacunarity;
+				// Alter y-pos
+				vertices[index].position.y += noiseHeight;
 			}
-			// Alter y-pos
-			vertices[index].position.y += noiseHeight;
 		}
+		// Alter amplitude and frequency
+		amplitude *= gain;
+		frequency *= lacunarity;
 	}
 
 	// Calculate normals of the terrain
@@ -730,6 +698,8 @@ void Terrain::Voronoi(ID3D11Device * device, int regionCount)
 
 void Terrain::Pick(ID3D11Device * device, XMVECTOR pickRayInWorldSpacePos, XMVECTOR pickRayInWorldSpaceDir, float displacement, int diameter)
 {
+	// Functions adapted from https://www.braynzarsoft.net/viewtutorial/q16390-24-picking
+
 	//Loop through each triangle in the object
 	for (int i = 0; i < indexCount / 3; i++)
 	{
@@ -816,6 +786,46 @@ void Terrain::Pick(ID3D11Device * device, XMVECTOR pickRayInWorldSpacePos, XMVEC
 
 	// Initialize the vertex and index buffer that hold the geometry for the terrain.
 	initBuffers(device);
+}
+
+bool Terrain::PointInTriangle(XMVECTOR & triV1, XMVECTOR & triV2, XMVECTOR & triV3, XMVECTOR & point)
+{
+	// Functions adapted from https://www.braynzarsoft.net/viewtutorial/q16390-24-picking
+
+	//To find out if the point is inside the triangle, we will check to see if the point
+	//is on the correct side of each of the triangles edges.
+
+	// Calculate the centre points of all the tris and the given point
+	XMVECTOR centrePoint = XMVector3Cross((triV3 - triV2), (point - triV2));
+	XMVECTOR centrePoint2 = XMVector3Cross((triV3 - triV2), (triV1 - triV2));
+
+	if (XMVectorGetX(XMVector3Dot(centrePoint, centrePoint2)) >= 0)
+	{
+		// Recalculate the centre points
+		centrePoint = XMVector3Cross((triV3 - triV1), (point - triV1));
+		centrePoint2 = XMVector3Cross((triV3 - triV1), (triV2 - triV1));
+
+		if (XMVectorGetX(XMVector3Dot(centrePoint, centrePoint2)) >= 0)
+		{
+			// Recalculate the centre points
+			centrePoint = XMVector3Cross((triV2 - triV1), (point - triV1));
+			centrePoint2 = XMVector3Cross((triV2 - triV1), (triV3 - triV1));
+
+			if (XMVectorGetX(XMVector3Dot(centrePoint, centrePoint2)) >= 0)
+			{
+				return true;
+			}
+			else
+			{
+				return false;
+			}
+		}
+		else
+		{
+			return false;
+		}
+	}
+	return false;
 }
 
 void Terrain::CalculateNormals()

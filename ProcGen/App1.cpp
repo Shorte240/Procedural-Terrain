@@ -34,18 +34,18 @@ void App1::init(HINSTANCE hinstance, HWND hwnd, int screenWidth, int screenHeigh
 	// Give initial values for all the variables
 	// used in the terrain manipulation functions
 	displacementHeight = 1.0f;
-	bottomLeft = 25;
-	bottomRight = 30;
-	topLeft = 100;
+	bottomLeft = -5;
+	bottomRight = -15;
+	topLeft = 10;
 	topRight = 0;
 
 	perlinFrequency = 0.135f;
 	perlinScale = 1.0f;
 
-	fBMFrequency = 10.0f;
+	fBMFrequency = 0.135f;
 	fBMGain = 0.25f;
 	fBMAmplitude = 2.0f;
-	fBMLacunarity = 20.0f;
+	fBMLacunarity = 4.0f;
 	fBMOctaves = 10.0f;
 	fBMRidged = false;
 
@@ -57,6 +57,9 @@ void App1::init(HINSTANCE hinstance, HWND hwnd, int screenWidth, int screenHeigh
 	currentCornerValues = true;
 	setCornerValues = false;
 	randomCornerValues = false;
+
+	// Give l-system better y-pos value
+	riverSystemPosition[1] = 5.0f;
 }
 
 
@@ -120,6 +123,8 @@ bool App1::frame()
 
 void App1::PickRayVector(float mouseX, float mouseY, XMVECTOR & pickRayInWorldSpacePos, XMVECTOR & pickRayInWorldSpaceDir)
 {
+	// Functions adapted from https://www.braynzarsoft.net/viewtutorial/q16390-24-picking
+
 	// Initialise vectors for later calulation
 	XMVECTOR pickRayInViewSpaceDir = XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f);
 	XMVECTOR pickRayInViewSpacePos = XMVectorSet(0.0f, 0.0f, 0.0f, 0.0f);
@@ -153,6 +158,8 @@ void App1::PickRayVector(float mouseX, float mouseY, XMVECTOR & pickRayInWorldSp
 
 void App1::InteractWithTerrain()
 {
+	// Functions adapted from https://www.braynzarsoft.net/viewtutorial/q16390-24-picking
+
 	// Picking enabled, alter terrain
 	if (picking)
 	{
@@ -421,8 +428,8 @@ void App1::gui()
 		lSystem->waveParams.elapsedTime += timer->getTime();
 		if (ImGui::TreeNode("Wave Variables"))
 		{
-			ImGui::SliderFloat("Wave Height", &lSystem->waveParams.height, 0, 20);
-			ImGui::SliderFloat("Wave Frequency", &lSystem->waveParams.frequency, 0, 15);
+			ImGui::SliderFloat("Wave Height", &lSystem->waveParams.height, 0, 1);
+			ImGui::SliderFloat("Wave Frequency", &lSystem->waveParams.frequency, 0, 3);
 			ImGui::SliderFloat("Wave Speed", &lSystem->waveParams.speed, 0, 5);
 			ImGui::TreePop();
 		}
