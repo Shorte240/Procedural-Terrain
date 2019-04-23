@@ -258,7 +258,8 @@ void App1::gui()
 	ImGui::Checkbox("Wireframe mode", &wireframeToggle);
 
 	// Displacement value used for majority of terrain displacement
-	ImGui::InputFloat("Displacement Value", &displacementHeight);
+	ImGui::Text("Displacement Value");
+	ImGui::InputFloat("", &displacementHeight);
 
 	// Generate a flat plane
 	if (ImGui::Button("Flat Plane")) 
