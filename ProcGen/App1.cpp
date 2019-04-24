@@ -387,20 +387,9 @@ void App1::gui()
 	// Function which takes mouse click and displaces terrain
 	if (ImGui::TreeNode("Picking"))
 	{
-		// Alter diameter either via ImGui interface
-		// or +/- numpad keys
+		// Alter diameter via ImGui interface
 		// Scroll wheel implementation was wanted for this
 		ImGui::InputInt("Pick Diameter", &pickDiameter);
-		if (input->isKeyDown(VK_ADD))
-		{
-			pickDiameter++;
-			input->SetKeyUp(VK_ADD);
-		}
-		else if (input->isKeyDown(VK_SUBTRACT))
-		{
-			pickDiameter--;
-			input->SetKeyUp(VK_SUBTRACT);
-		}
 
 		// Toggle to enable/disable picking on the terrain
 		ImGui::Checkbox("Picking Mode", &picking);
